@@ -1,0 +1,1961 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Update Player - Player Scouting System</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        :root {
+            --bg: #050505;
+            --surface: #080b0a;
+            --surface-light: #0d110f;
+            --surface-hover: #111713;
+
+            --green: #35c98b;
+            --green-light: #63e0ad;
+            --green-dark: #123b2e;
+
+            --text: #ffffff;
+            --muted: #9aa9a3;
+            --muted-light: #c0cbc6;
+
+            --border: rgba(53, 201, 139, 0.25);
+
+            --danger: #e74c3c;
+            --danger-light: #ff7568;
+
+            --radius: 15px;
+
+            --font: "Teko", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background: var(--bg);
+
+            color: var(--text);
+
+            font-family: var(--font);
+
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+
+            position: fixed;
+
+            width: 500px;
+            height: 500px;
+
+            top: -180px;
+            right: -150px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(53, 201, 139, 0.08),
+                    transparent 70%
+                );
+
+            pointer-events: none;
+
+            animation: glowPulse 5s ease-in-out infinite;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button,
+        input,
+        select {
+            font-family: var(--font);
+        }
+
+        /* Sidebar */
+
+        .sidebar {
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 260px;
+            height: 100vh;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            padding: 32px 20px 22px;
+
+            background: var(--surface);
+
+            border-right: 1px solid var(--border);
+
+            box-shadow:
+                10px 0 40px rgba(0, 0, 0, 0.35);
+
+            z-index: 1000;
+
+            animation: sidebarIn 0.7s ease both;
+        }
+
+        .brand {
+            margin-bottom: 45px;
+
+            padding-left: 8px;
+        }
+
+        .brand-title {
+            color: var(--text);
+
+            font-size: 25px;
+            font-weight: 600;
+
+            letter-spacing: 2px;
+
+            line-height: 1;
+        }
+
+        .brand-title span {
+            color: var(--green);
+        }
+
+        .brand-subtitle {
+            margin-top: 8px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+            font-weight: 400;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+        }
+
+        /* Navigation */
+
+        .nav {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+        }
+
+        .nav a {
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            padding: 12px;
+
+            color: var(--muted);
+
+            font-size: 16px;
+            font-weight: 500;
+
+            letter-spacing: 1px;
+
+            border-radius: 9px;
+
+            transition:
+                color 0.3s ease,
+                background 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        .nav a::before {
+            content: "";
+
+            width: 6px;
+            height: 6px;
+
+            margin-right: 12px;
+
+            border-radius: 50%;
+
+            background: #39443f;
+
+            transition:
+                background 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .nav a:hover {
+            color: var(--green-light);
+
+            background: rgba(53, 201, 139, 0.06);
+
+            transform: translateX(4px);
+        }
+
+        .nav a:hover::before {
+            background: var(--green);
+
+            box-shadow:
+                0 0 8px rgba(53, 201, 139, 0.7);
+        }
+
+        .nav a.active {
+            color: var(--green-light);
+
+            background: rgba(53, 201, 139, 0.08);
+        }
+
+        .nav a.active::before {
+            background: var(--green);
+
+            box-shadow:
+                0 0 9px rgba(53, 201, 139, 0.8);
+        }
+
+        /* Sidebar Bottom */
+
+        .sidebar-bottom {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+        }
+
+        .user-box {
+            padding: 15px;
+
+            background: var(--surface-light);
+
+            border: 1px solid var(--border);
+
+            border-radius: 12px;
+
+            transition:
+                border-color 0.3s ease,
+                background 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        .user-box:hover {
+            background: var(--surface-hover);
+
+            border-color:
+                rgba(53, 201, 139, 0.45);
+
+            transform: translateY(-2px);
+        }
+
+        .user-label {
+            color: var(--muted);
+
+            font-size: 12px;
+
+            letter-spacing: 1px;
+        }
+
+        .username {
+            margin-top: 3px;
+
+            color: var(--text);
+
+            font-size: 19px;
+            font-weight: 500;
+
+            word-break: break-word;
+        }
+
+        .role {
+            margin-top: 2px;
+
+            color: var(--green);
+
+            font-size: 14px;
+
+            letter-spacing: 1px;
+        }
+
+        .logout-form {
+            width: 100%;
+        }
+
+        .logout-button {
+            width: 100%;
+
+            padding: 11px 15px;
+
+            background: transparent;
+
+            border:
+                1px solid rgba(231, 76, 60, 0.3);
+
+            border-radius: 9px;
+
+            color: var(--danger);
+
+            font-size: 16px;
+            font-weight: 500;
+
+            letter-spacing: 1px;
+
+            cursor: pointer;
+
+            transition:
+                color 0.3s ease,
+                background 0.3s ease,
+                border-color 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        .logout-button:hover {
+            color: var(--danger-light);
+
+            background:
+                rgba(231, 76, 60, 0.08);
+
+            border-color:
+                rgba(231, 76, 60, 0.55);
+
+            transform: translateY(-2px);
+        }
+
+        /* Main */
+
+        .main {
+            width: calc(100% - 260px);
+
+            margin-left: 260px;
+
+            min-height: 100vh;
+
+            padding: 45px 35px 55px;
+        }
+
+        .container {
+            width: 100%;
+
+            max-width: 1100px;
+
+            margin: auto;
+        }
+
+        /* Header */
+
+        .page-header {
+            margin-bottom: 30px;
+
+            animation: fadeUp 0.7s ease both;
+        }
+
+        .eyebrow {
+            margin-bottom: 5px;
+
+            color: var(--green);
+
+            font-size: 15px;
+            font-weight: 500;
+
+            letter-spacing: 2.5px;
+
+            text-transform: uppercase;
+        }
+
+        .page-header h1 {
+            color: var(--text);
+
+            font-size: 44px;
+            font-weight: 600;
+
+            letter-spacing: 1px;
+
+            line-height: 1;
+        }
+
+        .page-header h1 span {
+            color: var(--green);
+        }
+
+        .page-header p {
+            margin-top: 12px;
+
+            color: var(--muted);
+
+            font-size: 18px;
+
+            letter-spacing: 0.5px;
+        }
+
+        /* Error */
+
+        .error {
+            margin-bottom: 25px;
+
+            padding: 14px 18px;
+
+            background:
+                rgba(231, 76, 60, 0.08);
+
+            border:
+                1px solid rgba(231, 76, 60, 0.35);
+
+            border-radius: 10px;
+
+            color: var(--danger-light);
+
+            font-size: 17px;
+
+            animation: fadeUp 0.6s ease both;
+        }
+
+        /* Form */
+
+        .form-card {
+            position: relative;
+
+            padding: 30px;
+
+            background: var(--surface);
+
+            border: 1px solid var(--border);
+
+            border-radius: var(--radius);
+
+            overflow: hidden;
+
+            animation: fadeUp 0.8s ease both;
+        }
+
+        .form-card::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 3px;
+
+            background: var(--green);
+
+            animation: linePulse 3s ease-in-out infinite;
+        }
+
+        /* Section */
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            position: relative;
+
+            margin-bottom: 20px;
+
+            padding-bottom: 9px;
+
+            color: var(--green-light);
+
+            font-size: 25px;
+            font-weight: 600;
+
+            letter-spacing: 1px;
+        }
+
+        .section-title::after {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            bottom: 0;
+
+            width: 45px;
+            height: 3px;
+
+            background: var(--green);
+
+            animation: linePulse 3s ease-in-out infinite;
+        }
+
+        /* Form Grid */
+
+        .row {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .row .form-group {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: var(--muted-light);
+
+            font-size: 17px;
+            font-weight: 500;
+
+            letter-spacing: 0.7px;
+        }
+
+        input,
+        select {
+            width: 100%;
+
+            height: 46px;
+
+            padding: 8px 13px;
+
+            background: var(--surface-light);
+
+            border:
+                1px solid rgba(53, 201, 139, 0.2);
+
+            border-radius: 8px;
+
+            color: var(--text);
+
+            font-size: 16px;
+
+            outline: none;
+
+            transition:
+                border-color 0.3s ease,
+                background 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        input:hover,
+        select:hover {
+            border-color:
+                rgba(53, 201, 139, 0.38);
+        }
+
+        input:focus,
+        select:focus {
+            background: var(--surface-hover);
+
+            border-color: var(--green);
+
+            box-shadow:
+                0 0 0 3px rgba(53, 201, 139, 0.08);
+        }
+
+        input[type="number"] {
+            appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 0.5;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        select option {
+            background: #0b0f0d;
+
+            color: var(--text);
+        }
+
+        input[type="file"] {
+            height: auto;
+
+            padding: 9px 12px;
+
+            cursor: pointer;
+        }
+
+        input[type="file"]::file-selector-button {
+            margin-right: 10px;
+
+            padding: 6px 12px;
+
+            background: var(--green-dark);
+
+            border: 1px solid var(--border);
+
+            border-radius: 6px;
+
+            color: var(--green-light);
+
+            font-family: var(--font);
+
+            font-size: 15px;
+
+            cursor: pointer;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background:
+                rgba(53, 201, 139, 0.2);
+        }
+
+        small {
+            display: block;
+
+            margin-top: 6px;
+
+            color: var(--muted);
+
+            font-size: 14px;
+
+            letter-spacing: 0.3px;
+        }
+
+        .skill-info {
+            margin-top: 4px;
+
+            color: var(--green);
+
+            font-size: 13px;
+
+            letter-spacing: 0.7px;
+        }
+
+        /* Current Photo */
+
+        .current-photo {
+            display: flex;
+
+            align-items: center;
+
+            gap: 20px;
+
+            margin-bottom: 20px;
+
+            padding: 15px;
+
+            background: var(--surface-light);
+
+            border: 1px solid var(--border);
+
+            border-radius: 10px;
+        }
+
+        .current-photo img {
+            width: 110px;
+            height: 110px;
+
+            object-fit: cover;
+
+            border-radius: 10px;
+
+            border:
+                1px solid var(--border);
+
+            box-shadow:
+                0 0 20px rgba(53, 201, 139, 0.08);
+        }
+
+        .current-photo-info {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 3px;
+        }
+
+        .current-photo-title {
+            color: var(--green-light);
+
+            font-size: 19px;
+
+            letter-spacing: 0.7px;
+        }
+
+        .current-photo-name {
+            color: var(--muted);
+
+            font-size: 15px;
+        }
+
+        /* Buttons */
+
+        .button-area {
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 35px;
+
+            padding-top: 25px;
+
+            border-top:
+                1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .btn {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-height: 44px;
+
+            padding: 9px 22px;
+
+            border-radius: 8px;
+
+            font-size: 17px;
+            font-weight: 500;
+
+            letter-spacing: 0.7px;
+
+            cursor: pointer;
+
+            transition:
+                background 0.3s ease,
+                border-color 0.3s ease,
+                color 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .btn-update {
+            background: var(--green);
+
+            border: 1px solid var(--green);
+
+            color: #02130c;
+        }
+
+        .btn-update:hover {
+            background: var(--green-light);
+
+            border-color: var(--green-light);
+
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 10px 25px rgba(53, 201, 139, 0.18);
+        }
+
+        .btn-cancel {
+            background: transparent;
+
+            border:
+                1px solid var(--border);
+
+            color: var(--muted-light);
+        }
+
+        .btn-cancel:hover {
+            background:
+                rgba(53, 201, 139, 0.08);
+
+            border-color: var(--green);
+
+            color: var(--green-light);
+
+            transform: translateY(-3px);
+        }
+
+        /* Back Link */
+
+        .back-link {
+            display: inline-flex;
+
+            margin-top: 22px;
+
+            color: var(--muted);
+
+            font-size: 17px;
+
+            letter-spacing: 0.5px;
+
+            transition:
+                color 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--green-light);
+
+            transform: translateX(-3px);
+        }
+
+        /* Animations */
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        @keyframes sidebarIn {
+
+            from {
+                opacity: 0;
+                transform: translateX(-25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+        }
+
+        @keyframes glowPulse {
+
+            0% {
+                opacity: 0.35;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 0.35;
+            }
+
+        }
+
+        @keyframes linePulse {
+
+            0% {
+                opacity: 0.45;
+                transform: scaleX(0.7);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+
+            100% {
+                opacity: 0.45;
+                transform: scaleX(0.7);
+            }
+
+        }
+
+        /* Tablet */
+
+        @media (max-width: 1050px) {
+
+            .sidebar {
+                width: 230px;
+            }
+
+            .main {
+                width: calc(100% - 230px);
+
+                margin-left: 230px;
+            }
+
+        }
+
+        /* Mobile */
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+                position: relative;
+
+                width: 100%;
+                height: auto;
+
+                padding: 25px 20px;
+
+                border-right: none;
+
+                border-bottom:
+                    1px solid var(--border);
+            }
+
+            .brand {
+                margin-bottom: 25px;
+            }
+
+            .nav {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .sidebar-bottom {
+                margin-top: 25px;
+            }
+
+            .main {
+                width: 100%;
+
+                margin-left: 0;
+
+                padding: 35px 20px 45px;
+            }
+
+            .page-header h1 {
+                font-size: 38px;
+            }
+
+            .form-card {
+                padding: 22px;
+            }
+
+            .row {
+                grid-template-columns: 1fr;
+
+                gap: 0;
+            }
+
+            .row .form-group {
+                margin-bottom: 18px;
+            }
+
+            .button-area {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+        }
+
+        /* Small Mobile */
+
+        @media (max-width: 560px) {
+
+            .main {
+                padding: 30px 15px 40px;
+            }
+
+            .brand-title {
+                font-size: 22px;
+            }
+
+            .page-header h1 {
+                font-size: 34px;
+            }
+
+            .page-header p {
+                font-size: 16px;
+            }
+
+            .form-card {
+                padding: 18px;
+            }
+
+            .current-photo {
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+
+            .current-photo img {
+                width: 130px;
+                height: 130px;
+            }
+
+        }
+
+        /* Reduced Motion */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+
+                animation-iteration-count: 1 !important;
+
+                scroll-behavior: auto !important;
+
+                transition-duration: 0.01ms !important;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div>
+
+            <div class="brand">
+
+                <div class="brand-title">
+                    PLAYER <span>SCOUTING</span>
+                </div>
+
+                <div class="brand-subtitle">
+                    Academy Panel
+                </div>
+
+            </div>
+
+            <nav class="nav">
+
+                <a href="{% url 'academy_dashboard' %}">
+                    Dashboard
+                </a>
+
+                <a href="{% url 'manage_players' %}">
+                    Manage Players
+                </a>
+
+                <a href="{% url 'add_player' %}">
+                    Add Player
+                </a>
+
+            </nav>
+
+        </div>
+
+        <div class="sidebar-bottom">
+
+            <div class="user-box">
+
+                <div class="user-label">
+                    Logged in as
+                </div>
+
+                <div class="username">
+                    {{ request.user.username }}
+                </div>
+
+                <div class="role">
+                    Academy
+                </div>
+
+            </div>
+
+            <form
+                method="POST"
+                action="{% url 'logout' %}"
+                class="logout-form"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    Logout
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <div class="container">
+
+            <header class="page-header">
+
+                <div class="eyebrow">
+                    Player Management
+                </div>
+
+                <h1>
+                    Update <span>Player</span>
+                </h1>
+
+                <p>
+                    Update the player's profile, physical information and scouting attributes.
+                </p>
+
+            </header>
+
+            {% if error %}
+
+                <div class="error">
+                    {{ error }}
+                </div>
+
+            {% endif %}
+
+            <div class="form-card">
+
+                <form
+                    method="POST"
+                    enctype="multipart/form-data"
+                >
+
+                    {% csrf_token %}
+
+                    <!-- Basic Information -->
+
+                    <section class="section">
+
+                        <h2 class="section-title">
+                            Basic Information
+                        </h2>
+
+                        <div class="row">
+
+                            <div class="form-group">
+
+                                <label for="name">
+                                    Player Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    value="{{ player.name }}"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="age">
+                                    Age
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="age"
+                                    name="age"
+                                    value="{{ player.age }}"
+                                    min="1"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="form-group">
+
+                                <label for="position">
+                                    Position
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="position"
+                                    name="position"
+                                    value="{{ player.position }}"
+                                    required
+                                >
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="preferred_foot">
+                                    Preferred Foot
+                                </label>
+
+                                <select
+                                    id="preferred_foot"
+                                    name="preferred_foot"
+                                >
+
+                                    <option
+                                        value="Right"
+                                        {% if player.preferred_foot == "Right" %}selected{% endif %}
+                                    >
+                                        Right
+                                    </option>
+
+                                    <option
+                                        value="Left"
+                                        {% if player.preferred_foot == "Left" %}selected{% endif %}
+                                    >
+                                        Left
+                                    </option>
+
+                                    <option
+                                        value="Both"
+                                        {% if player.preferred_foot == "Both" %}selected{% endif %}
+                                    >
+                                        Both
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <!-- Physical Information -->
+
+                    <section class="section">
+
+                        <h2 class="section-title">
+                            Physical Information
+                        </h2>
+
+                        <div class="row">
+
+                            <div class="form-group">
+
+                                <label for="height">
+                                    Height
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="height"
+                                    name="height"
+                                    value="{{ player.height }}"
+                                    step="0.1"
+                                    min="0"
+                                >
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="weight">
+                                    Weight
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="weight"
+                                    name="weight"
+                                    value="{{ player.weight }}"
+                                    step="0.1"
+                                    min="0"
+                                >
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="phone">
+                                Phone
+                            </label>
+
+                            <input
+                                type="text"
+                                id="phone"
+                                name="phone"
+                                value="{{ player.phone }}"
+                            >
+
+                        </div>
+
+                    </section>
+
+                    <!-- Player Photo -->
+
+                    <section class="section">
+
+                        <h2 class="section-title">
+                            Player Photo
+                        </h2>
+
+                        {% if player.photo %}
+
+                            <div class="current-photo">
+
+                                <img
+                                    src="{{ player.photo.url }}"
+                                    alt="{{ player.name }}"
+                                >
+
+                                <div class="current-photo-info">
+
+                                    <div class="current-photo-title">
+                                        Current Photo
+                                    </div>
+
+                                    <div class="current-photo-name">
+                                        {{ player.name }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+                        <div class="form-group">
+
+                            <label for="photo">
+                                Change Photo
+                            </label>
+
+                            <input
+                                type="file"
+                                id="photo"
+                                name="photo"
+                                accept="image/*"
+                            >
+
+                            <small>
+                                Leave empty if you want to keep the current photo.
+                            </small>
+
+                        </div>
+
+                    </section>
+
+                    <!-- Player Skills -->
+
+                    <section class="section">
+
+                        <h2 class="section-title">
+                            Player Skills
+                        </h2>
+
+                        <div class="row">
+
+                            <div class="form-group">
+
+                                <label for="speed">
+                                    Speed
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="speed"
+                                    name="speed"
+                                    value="{{ player.speed }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="shooting">
+                                    Shooting
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="shooting"
+                                    name="shooting"
+                                    value="{{ player.shooting }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="form-group">
+
+                                <label for="passing">
+                                    Passing
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="passing"
+                                    name="passing"
+                                    value="{{ player.passing }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="dribbling">
+                                    Dribbling
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="dribbling"
+                                    name="dribbling"
+                                    value="{{ player.dribbling }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <!-- Technical Skills -->
+
+                    <section class="section">
+
+                        <h2 class="section-title">
+                            Technical Skills
+                        </h2>
+
+                        <div class="row">
+
+                            <div class="form-group">
+
+                                <label for="ball_control">
+                                    Ball Control
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="ball_control"
+                                    name="ball_control"
+                                    value="{{ player.ball_control }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="crossing">
+                                    Crossing
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="crossing"
+                                    name="crossing"
+                                    value="{{ player.crossing }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="form-group">
+
+                                <label for="finishing">
+                                    Finishing
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="finishing"
+                                    name="finishing"
+                                    value="{{ player.finishing }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="heading">
+                                    Heading
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="heading"
+                                    name="heading"
+                                    value="{{ player.heading }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <!-- Physical Skills -->
+
+                    <section class="section">
+
+                        <h2 class="section-title">
+                            Physical Skills
+                        </h2>
+
+                        <div class="row">
+
+                            <div class="form-group">
+
+                                <label for="acceleration">
+                                    Acceleration
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="acceleration"
+                                    name="acceleration"
+                                    value="{{ player.acceleration }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="agility">
+                                    Agility
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="agility"
+                                    name="agility"
+                                    value="{{ player.agility }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="form-group">
+
+                                <label for="balance">
+                                    Balance
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="balance"
+                                    name="balance"
+                                    value="{{ player.balance }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="stamina">
+                                    Stamina
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="stamina"
+                                    name="stamina"
+                                    value="{{ player.stamina }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="form-group">
+
+                                <label for="strength">
+                                    Strength
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="strength"
+                                    name="strength"
+                                    value="{{ player.strength }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="jumping">
+                                    Jumping
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="jumping"
+                                    name="jumping"
+                                    value="{{ player.jumping }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <!-- Defensive Skills -->
+
+                    <section class="section">
+
+                        <h2 class="section-title">
+                            Defensive Skills
+                        </h2>
+
+                        <div class="row">
+
+                            <div class="form-group">
+
+                                <label for="defending">
+                                    Defending
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="defending"
+                                    name="defending"
+                                    value="{{ player.defending }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="tackling">
+                                    Tackling
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="tackling"
+                                    name="tackling"
+                                    value="{{ player.tackling }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="form-group">
+
+                                <label for="interceptions">
+                                    Interceptions
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="interceptions"
+                                    name="interceptions"
+                                    value="{{ player.interceptions }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="marking">
+                                    Marking
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="marking"
+                                    name="marking"
+                                    value="{{ player.marking }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <!-- Mental and Tactical Skills -->
+
+                    <section class="section">
+
+                        <h2 class="section-title">
+                            Mental and Tactical Skills
+                        </h2>
+
+                        <div class="row">
+
+                            <div class="form-group">
+
+                                <label for="vision">
+                                    Vision
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="vision"
+                                    name="vision"
+                                    value="{{ player.vision }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="decision_making">
+                                    Decision Making
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="decision_making"
+                                    name="decision_making"
+                                    value="{{ player.decision_making }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="form-group">
+
+                                <label for="positioning">
+                                    Positioning
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="positioning"
+                                    name="positioning"
+                                    value="{{ player.positioning }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="composure">
+                                    Composure
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="composure"
+                                    name="composure"
+                                    value="{{ player.composure }}"
+                                    min="0"
+                                    max="100"
+                                >
+
+                                <div class="skill-info">
+                                    Rating: 0 - 100
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <!-- Buttons -->
+
+                    <div class="button-area">
+
+                        <button
+                            type="submit"
+                            class="btn btn-update"
+                        >
+                            Update Player
+                        </button>
+
+                        <a
+                            href="{% url 'manage_players' %}"
+                            class="btn btn-cancel"
+                        >
+                            Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <a
+                href="{% url 'manage_players' %}"
+                class="back-link"
+            >
+                ← Back to Manage Players
+            </a>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

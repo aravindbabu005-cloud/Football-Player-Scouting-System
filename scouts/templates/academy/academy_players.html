@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Academy Players - Player Scouting System</title>
+
+</head>
+
+<body>
+
+    <h1>Academy Players</h1>
+
+    <hr>
+
+    <!-- Academy Information -->
+
+    <h2>{{ academy.name }}</h2>
+
+    <p>
+        <strong>Location:</strong>
+        {{ academy.location }}
+    </p>
+
+    <p>
+        <strong>Total Players:</strong>
+        {{ players|length }}
+    </p>
+
+    <hr>
+
+
+    <!-- Navigation -->
+
+    <p>
+        <a href="{% url 'academy_dashboard' %}">
+            Back to Dashboard
+        </a>
+    </p>
+
+    <p>
+        <a href="{% url 'manage_players' %}">
+            Manage Players
+        </a>
+    </p>
+
+    <p>
+        <a href="{% url 'add_player' %}">
+            Add Player
+        </a>
+    </p>
+
+    <hr>
+
+
+    <!-- Player List -->
+
+    <h2>Players</h2>
+
+    {% if players %}
+
+        <table
+            border="1"
+            cellpadding="10"
+            cellspacing="0"
+        >
+
+            <thead>
+
+                <tr>
+
+                    <th>Photo</th>
+
+                    <th>Name</th>
+
+                    <th>Age</th>
+
+                    <th>Position</th>
+
+                    <th>Preferred Foot</th>
+
+                    <th>Height</th>
+
+                    <th>Weight</th>
+
+                    <th>Phone</th>
+
+                    <th>Speed</th>
+
+                    <th>Shooting</th>
+
+                    <th>Passing</th>
+
+                    <th>Dribbling</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for player in players %}
+
+                    <tr>
+
+                        <!-- Photo -->
+
+                        <td>
+
+                            {% if player.photo %}
+
+                                <img
+                                    src="{{ player.photo.url }}"
+                                    width="80"
+                                    height="80"
+                                    alt="{{ player.name }}"
+                                >
+
+                            {% else %}
+
+                                No Photo
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Player Information -->
+
+                        <td>
+                            {{ player.name }}
+                        </td>
+
+                        <td>
+                            {{ player.age }}
+                        </td>
+
+                        <td>
+                            {{ player.position }}
+                        </td>
+
+                        <td>
+                            {{ player.preferred_foot }}
+                        </td>
+
+                        <td>
+                            {{ player.height }}
+                        </td>
+
+                        <td>
+                            {{ player.weight }}
+                        </td>
+
+                        <td>
+                            {{ player.phone }}
+                        </td>
+
+
+                        <!-- Player Skills -->
+
+                        <td>
+                            {{ player.speed }}
+                        </td>
+
+                        <td>
+                            {{ player.shooting }}
+                        </td>
+
+                        <td>
+                            {{ player.passing }}
+                        </td>
+
+                        <td>
+                            {{ player.dribbling }}
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    {% else %}
+
+        <h3>No Players Found</h3>
+
+        <p>
+            There are no players registered under this academy.
+        </p>
+
+        <a href="{% url 'add_player' %}">
+            Add Your First Player
+        </a>
+
+    {% endif %}
+
+    <br>
+
+    <hr>
+
+    <a href="{% url 'logout' %}">
+        Logout
+    </a>
+
+</body>
+
+</html>

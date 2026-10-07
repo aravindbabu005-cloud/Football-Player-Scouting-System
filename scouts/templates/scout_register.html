@@ -1,0 +1,1695 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Scout Registration | Player Scouting System</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        :root {
+            --green: #35c98b;
+            --green-dark: #123b2e;
+            --green-light: #63e0ad;
+
+            --black: #010101;
+            --dark: #050908;
+            --card: #09100d;
+
+            --text-main: #ffffff;
+            --text-light: rgba(255, 255, 255, 0.72);
+            --text-muted: rgba(255, 255, 255, 0.48);
+
+            --border: rgba(53, 201, 139, 0.22);
+            --border-strong: rgba(53, 201, 139, 0.55);
+
+            --font-main: "Teko", sans-serif;
+
+            --font-size-main: 20px;
+            --font-size-small: 17px;
+            --font-size-label: 18px;
+            --font-size-button: 19px;
+            --font-size-navbar: 18px;
+
+            --radius-small: 8px;
+            --radius-card: 20px;
+        }
+
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        html {
+            width: 100%;
+            min-height: 100%;
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+
+            background: var(--black);
+            color: var(--text-main);
+
+            font-family: var(--font-main);
+            font-size: var(--font-size-main);
+            line-height: 1.5;
+
+            overflow-x: hidden;
+
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+
+        a,
+        button,
+        input,
+        label {
+            font-family: var(--font-main);
+        }
+
+
+        /* Navbar */
+
+        .navbar {
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 78px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    rgba(0, 0, 0, 0.94),
+                    rgba(0, 0, 0, 0.97)
+                ),
+                url("{% static 'img/jose.jpg' %}");
+
+            background-size: cover;
+            background-position: center;
+
+            border-bottom: 1px solid rgba(53, 201, 139, 0.22);
+
+            z-index: 9999;
+
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+
+            animation: navbarDrop 0.7s ease both;
+        }
+
+
+        .navbar::after {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            height: 1px;
+
+            background: var(--green);
+
+            opacity: 0.55;
+        }
+
+
+        .navbar-container {
+            width: 100%;
+            max-width: 1500px;
+            height: 100%;
+
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 53px;
+        }
+
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 55px;
+
+            height: 100%;
+
+            margin: 0;
+        }
+
+
+        .nav-links a {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            height: 100%;
+
+            color: rgba(255, 255, 255, 0.82);
+
+            text-decoration: none;
+
+            font-family: var(--font-main);
+            font-size: var(--font-size-navbar);
+            font-weight: 600;
+
+            letter-spacing: 2px;
+
+            transition:
+                color 0.3s ease,
+                transform 0.3s ease;
+        }
+
+
+        .nav-links a::after {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            bottom: 17px;
+
+            width: 0;
+            height: 2px;
+
+            background: var(--green);
+
+            transition: width 0.3s ease;
+        }
+
+
+        .nav-links a:hover {
+            color: var(--green);
+
+            transform: translateY(-1px);
+        }
+
+
+        .nav-links a:hover::after,
+        .nav-links .active::after {
+            width: 100%;
+        }
+
+
+        .nav-links .active {
+            color: var(--green);
+        }
+
+
+        /* Page */
+
+        .page {
+            position: relative;
+
+            width: 100%;
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 125px 35px 70px;
+
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    #123b2e 0%,
+                    #0b211c 18%,
+                    #07110f 40%,
+                    #030605 70%,
+                    #010101 100%
+                );
+
+            overflow: hidden;
+        }
+
+
+        .page::before {
+            content: "";
+
+            position: absolute;
+
+            width: 750px;
+            height: 750px;
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+
+            border-radius: 50%;
+
+            background: var(--green);
+
+            opacity: 0.035;
+
+            filter: blur(140px);
+
+            pointer-events: none;
+
+            animation: backgroundPulse 7s ease-in-out infinite;
+        }
+
+
+        /* Registration Wrapper */
+
+        .register-wrapper {
+            position: relative;
+
+            z-index: 2;
+
+            width: 100%;
+            max-width: 1080px;
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(350px, 0.9fr)
+                minmax(430px, 1.1fr);
+
+            background: rgba(9, 16, 13, 0.96);
+
+            border: 1px solid var(--border);
+
+            border-radius: var(--radius-card);
+
+            overflow: hidden;
+
+            box-shadow:
+                0 25px 70px rgba(0, 0, 0, 0.55),
+                0 0 40px rgba(53, 201, 139, 0.06);
+
+            animation: cardEntrance 0.8s ease both;
+
+            transition:
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .register-wrapper:hover {
+            border-color: rgba(53, 201, 139, 0.35);
+
+            box-shadow:
+                0 28px 75px rgba(0, 0, 0, 0.60),
+                0 0 45px rgba(53, 201, 139, 0.08);
+        }
+
+
+        /* Left Section */
+
+        .left-section {
+            position: relative;
+
+            min-height: 650px;
+
+            display: flex;
+            align-items: flex-end;
+
+            padding: 42px;
+
+            background:
+                linear-gradient(
+                    to top,
+                    rgba(3, 15, 10, 0.96) 5%,
+                    rgba(3, 15, 10, 0.72) 45%,
+                    rgba(3, 15, 10, 0.22) 100%
+                ),
+                url("{% static 'img/scout.jpg' %}");
+
+            background-size: cover;
+            background-position: center;
+
+            overflow: hidden;
+        }
+
+
+        .left-section::before {
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(53, 201, 139, 0.08),
+                    transparent 45%
+                );
+
+            pointer-events: none;
+        }
+
+
+        .left-section::after {
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            border-right: 1px solid rgba(53, 201, 139, 0.18);
+
+            pointer-events: none;
+        }
+
+
+        .left-content {
+            position: relative;
+
+            z-index: 2;
+
+            max-width: 430px;
+
+            animation: fadeUp 0.8s ease 0.25s both;
+        }
+
+
+        .small-title {
+            display: inline-flex;
+
+            align-items: center;
+
+            padding: 7px 12px;
+
+            margin-bottom: 15px;
+
+            border-radius: 20px;
+
+            background: rgba(18, 59, 46, 0.95);
+
+            color: var(--green-light);
+
+            font-size: var(--font-size-small);
+            font-weight: 600;
+
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+
+        .left-content h1 {
+            margin-bottom: 15px;
+
+            color: #ffffff;
+
+            font-family: var(--font-main);
+
+            font-size: clamp(38px, 4vw, 58px);
+
+            font-weight: 600;
+
+            line-height: 1;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        .left-content p {
+            max-width: 400px;
+
+            color: rgba(255, 255, 255, 0.72);
+
+            font-family: var(--font-main);
+
+            font-size: var(--font-size-main);
+
+            line-height: 1.5;
+        }
+
+
+        /* Form Section */
+
+        .form-section {
+            padding: 44px 46px;
+
+            animation: fadeUp 0.8s ease 0.35s both;
+        }
+
+
+        .form-header {
+            margin-bottom: 28px;
+        }
+
+
+        .form-header h2 {
+            margin-bottom: 8px;
+
+            color: #ffffff;
+
+            font-family: var(--font-main);
+
+            font-size: 34px;
+
+            font-weight: 600;
+
+            line-height: 1;
+        }
+
+
+        .form-header p {
+            color: var(--text-muted);
+
+            font-size: var(--font-size-main);
+        }
+
+
+        /* Messages */
+
+        .message-box {
+            width: 100%;
+
+            padding: 10px 14px;
+
+            margin-bottom: 18px;
+
+            border-radius: 9px;
+
+            font-size: var(--font-size-small);
+
+            line-height: 1.4;
+
+            animation: messageSlide 0.4s ease both;
+        }
+
+
+        .error-box {
+            background: rgba(180, 45, 45, 0.12);
+
+            border: 1px solid rgba(220, 70, 70, 0.35);
+
+            color: #ff9b9b;
+        }
+
+
+        .success-box {
+            background: rgba(53, 201, 139, 0.10);
+
+            border: 1px solid rgba(53, 201, 139, 0.35);
+
+            color: var(--green-light);
+        }
+
+
+        /* Form */
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+
+        .form-row {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 16px;
+        }
+
+
+        label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #dce6e1;
+
+            font-family: var(--font-main);
+
+            font-size: var(--font-size-label);
+
+            font-weight: 500;
+
+            letter-spacing: 0.3px;
+        }
+
+
+        input {
+            width: 100%;
+
+            min-height: 48px;
+
+            padding: 9px 14px;
+
+            background: #050907;
+
+            color: #ffffff;
+
+            border: 1px solid #1b4033;
+
+            border-radius: 9px;
+
+            outline: none;
+
+            font-family: var(--font-main);
+
+            font-size: var(--font-size-main);
+
+            font-weight: 400;
+
+            transition:
+                border-color 0.3s ease,
+                box-shadow 0.3s ease,
+                background 0.3s ease,
+                transform 0.3s ease;
+        }
+
+
+        input::placeholder {
+            color: #63716a;
+        }
+
+
+        input:hover {
+            border-color: rgba(53, 201, 139, 0.42);
+        }
+
+
+        input:focus {
+            background: #07100c;
+
+            border-color: var(--green);
+
+            box-shadow:
+                0 0 0 3px rgba(53, 201, 139, 0.08),
+                0 0 18px rgba(53, 201, 139, 0.05);
+        }
+
+
+        /* Password */
+
+        .password-wrapper {
+            position: relative;
+
+            width: 100%;
+        }
+
+
+        .password-wrapper input {
+            padding-right: 52px;
+        }
+
+
+        .password-toggle {
+            position: absolute;
+
+            top: 50%;
+            right: 12px;
+
+            width: 34px;
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            transform: translateY(-50%);
+
+            padding: 0;
+
+            background: transparent;
+
+            color: #68756f;
+
+            border: none;
+
+            cursor: pointer;
+
+            font-family: Arial, sans-serif;
+
+            line-height: 1;
+
+            transition:
+                color 0.3s ease,
+                transform 0.3s ease;
+        }
+
+
+        .password-toggle:hover {
+            color: var(--green-light);
+
+            transform:
+                translateY(-50%)
+                scale(1.08);
+        }
+
+
+        .password-toggle:focus {
+            outline: none;
+
+            color: var(--green);
+        }
+
+
+        .password-toggle svg {
+            width: 20px;
+            height: 20px;
+
+            fill: none;
+
+            stroke: currentColor;
+
+            stroke-width: 1.8;
+
+            stroke-linecap: round;
+
+            stroke-linejoin: round;
+
+            transition: stroke 0.3s ease;
+        }
+
+
+        input[type="file"] {
+            padding: 8px;
+
+            cursor: pointer;
+        }
+
+
+        input[type="file"]::file-selector-button {
+            margin-right: 10px;
+
+            padding: 7px 12px;
+
+            background: var(--green-dark);
+
+            color: var(--green-light);
+
+            border: 1px solid #246b52;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-family: var(--font-main);
+
+            font-size: 16px;
+
+            transition:
+                background 0.3s ease,
+                color 0.3s ease;
+        }
+
+
+        input[type="file"]::file-selector-button:hover {
+            background: var(--green);
+
+            color: #03150e;
+        }
+
+
+        .help-text {
+            margin-top: 5px;
+
+            color: #68756f;
+
+            font-size: 14px;
+
+            line-height: 1.4;
+        }
+
+
+        /* Button */
+
+        .register-btn {
+            position: relative;
+
+            width: 100%;
+
+            min-height: 50px;
+
+            margin-top: 8px;
+
+            padding: 10px 18px;
+
+            overflow: hidden;
+
+            background: var(--green);
+
+            color: #03150e;
+
+            border: none;
+
+            border-radius: 9px;
+
+            font-family: var(--font-main);
+
+            font-size: var(--font-size-button);
+
+            font-weight: 600;
+
+            letter-spacing: 0.5px;
+
+            cursor: pointer;
+
+            transition:
+                background 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .register-btn::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: -120%;
+
+            width: 65%;
+            height: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.30),
+                    transparent
+                );
+
+            transition: left 0.5s ease;
+        }
+
+
+        .register-btn:hover {
+            background: var(--green-light);
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 28px rgba(53, 201, 139, 0.20);
+        }
+
+
+        .register-btn:hover::before {
+            left: 130%;
+        }
+
+
+        .register-btn:active {
+            transform: translateY(0);
+        }
+
+
+        /* Login */
+
+        .login-text {
+            margin-top: 22px;
+
+            text-align: center;
+
+            color: var(--text-muted);
+
+            font-size: var(--font-size-small);
+        }
+
+
+        .login-text a {
+            color: var(--green-light);
+
+            text-decoration: none;
+
+            font-weight: 600;
+
+            transition: color 0.3s ease;
+        }
+
+
+        .login-text a:hover {
+            color: var(--green);
+
+            text-decoration: underline;
+        }
+
+
+        /* Animations */
+
+        @keyframes navbarDrop {
+
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        @keyframes cardEntrance {
+
+            from {
+                opacity: 0;
+
+                transform:
+                    translateY(30px)
+                    scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+
+        }
+
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+
+                transform: translateY(0);
+            }
+
+        }
+
+
+        @keyframes messageSlide {
+
+            from {
+                opacity: 0;
+
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+
+                transform: translateY(0);
+            }
+
+        }
+
+
+        @keyframes backgroundPulse {
+
+            0%,
+            100% {
+                opacity: 0.035;
+
+                transform:
+                    translate(-50%, -50%)
+                    scale(1);
+            }
+
+            50% {
+                opacity: 0.06;
+
+                transform:
+                    translate(-50%, -50%)
+                    scale(1.08);
+            }
+
+        }
+
+
+        /* Tablet */
+
+        @media (max-width: 1000px) {
+
+            .navbar-container {
+                padding: 0 30px;
+            }
+
+
+            .nav-links {
+                gap: 40px;
+            }
+
+
+            .page {
+                padding:
+                    115px 25px 60px;
+            }
+
+
+            .register-wrapper {
+                grid-template-columns:
+                    minmax(300px, 0.9fr)
+                    minmax(400px, 1.1fr);
+            }
+
+
+            .left-section {
+                min-height: 620px;
+
+                padding: 35px;
+            }
+
+
+            .form-section {
+                padding: 38px 35px;
+            }
+
+        }
+
+
+        /* Tablet Portrait */
+
+        @media (max-width: 850px) {
+
+            .navbar-container {
+                padding: 0 25px;
+            }
+
+
+            .nav-links {
+                gap: 30px;
+            }
+
+
+            .register-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+
+            .left-section {
+                min-height: 330px;
+
+                padding: 35px;
+            }
+
+
+            .left-section::after {
+                border-right: none;
+
+                border-bottom: 1px solid rgba(53, 201, 139, 0.18);
+            }
+
+
+            .left-content h1 {
+                font-size: 48px;
+            }
+
+
+            .form-section {
+                padding: 38px;
+            }
+
+        }
+
+
+        /* Mobile */
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                height: 70px;
+            }
+
+
+            .navbar-container {
+                padding: 0 18px;
+            }
+
+
+            .nav-links {
+                width: 100%;
+
+                gap: 20px;
+
+                justify-content: center;
+            }
+
+
+            .nav-links a {
+                font-size: 15px;
+
+                letter-spacing: 1.2px;
+            }
+
+
+            .nav-links a::after {
+                bottom: 10px;
+            }
+
+
+            .page {
+                padding:
+                    100px 14px 45px;
+            }
+
+
+            .register-wrapper {
+                border-radius: 16px;
+            }
+
+
+            .left-section {
+                min-height: 270px;
+
+                padding: 28px 24px;
+            }
+
+
+            .left-content h1 {
+                font-size: 42px;
+            }
+
+
+            .left-content p {
+                font-size: 18px;
+            }
+
+
+            .form-section {
+                padding: 30px 22px;
+            }
+
+
+            .form-header {
+                margin-bottom: 24px;
+            }
+
+
+            .form-header h2 {
+                font-size: 31px;
+            }
+
+
+            .form-header p {
+                font-size: 18px;
+            }
+
+
+            .form-row {
+                grid-template-columns: 1fr;
+
+                gap: 0;
+            }
+
+
+            .form-group {
+                margin-bottom: 17px;
+            }
+
+
+            input {
+                min-height: 47px;
+
+                font-size: 18px;
+            }
+
+
+            label {
+                font-size: 17px;
+            }
+
+
+            .register-btn {
+                min-height: 48px;
+
+                font-size: 19px;
+            }
+
+        }
+
+
+        /* Small Mobile */
+
+        @media (max-width: 450px) {
+
+            .navbar-container {
+                padding: 0 10px;
+            }
+
+
+            .nav-links {
+                gap: 14px;
+            }
+
+
+            .nav-links a {
+                font-size: 13px;
+
+                letter-spacing: 0.8px;
+            }
+
+
+            .page {
+                padding:
+                    95px 10px 40px;
+            }
+
+
+            .left-section {
+                min-height: 250px;
+
+                padding: 24px 20px;
+            }
+
+
+            .small-title {
+                padding: 6px 10px;
+
+                font-size: 15px;
+            }
+
+
+            .left-content h1 {
+                font-size: 37px;
+            }
+
+
+            .left-content p {
+                font-size: 16px;
+
+                line-height: 1.5;
+            }
+
+
+            .form-section {
+                padding: 27px 18px;
+            }
+
+
+            .form-header h2 {
+                font-size: 29px;
+            }
+
+
+            label {
+                font-size: 16px;
+            }
+
+
+            input {
+                min-height: 45px;
+
+                padding: 9px 12px;
+
+                font-size: 17px;
+            }
+
+
+            .help-text {
+                font-size: 13px;
+            }
+
+
+            .register-btn {
+                font-size: 18px;
+            }
+
+        }
+
+
+        /* Extra Small */
+
+        @media (max-width: 360px) {
+
+            .nav-links {
+                gap: 10px;
+            }
+
+
+            .nav-links a {
+                font-size: 11px;
+
+                letter-spacing: 0.5px;
+            }
+
+
+            .left-section {
+                min-height: 230px;
+            }
+
+
+            .left-content h1 {
+                font-size: 34px;
+            }
+
+
+            .form-section {
+                padding: 24px 15px;
+            }
+
+        }
+
+
+        /* Reduced Motion */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+
+                animation-iteration-count: 1 !important;
+
+                scroll-behavior: auto !important;
+
+                transition-duration: 0.01ms !important;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar">
+
+        <div class="navbar-container">
+
+            <div class="nav-links">
+
+                <a href="{% url 'index' %}">
+                    HOME
+                </a>
+
+                <a href="{% url 'index' %}#about">
+                    ABOUT
+                </a>
+
+                <a href="{% url 'login' %}">
+                    LOGIN
+                </a>
+
+                <a
+                    href="{% url 'register' %}"
+                    class="active"
+                >
+                    REGISTER
+                </a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Page -->
+
+    <main class="page">
+
+        <div class="register-wrapper">
+
+            <!-- Left Section -->
+
+            <section class="left-section">
+
+                <div class="left-content">
+
+                    <div class="small-title">
+                        Scout Registration
+                    </div>
+
+                    <h1>
+                        Join as a Scout
+                    </h1>
+
+                    <p>
+                        Create your Scout account and connect with
+                        talented football players through the
+                        Player Scouting System.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- Form Section -->
+
+            <section class="form-section">
+
+                <div class="form-header">
+
+                    <h2>
+                        Scout Registration
+                    </h2>
+
+                    <p>
+                        Enter your details to create your account.
+                    </p>
+
+                </div>
+
+
+                <!-- Django Messages -->
+
+                {% if messages %}
+
+                    {% for message in messages %}
+
+                        <div
+                            class="message-box
+                            {% if message.tags == 'success' %}
+                                success-box
+                            {% else %}
+                                error-box
+                            {% endif %}"
+                        >
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+
+                <!-- Registration Form -->
+
+                <form
+                    method="POST"
+                    enctype="multipart/form-data"
+                    action="{% url 'scout_register' %}"
+                >
+
+                    {% csrf_token %}
+
+
+                    <!-- Username -->
+
+                    <div class="form-group">
+
+                        <label for="username">
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Enter username"
+                            minlength="3"
+                            maxlength="150"
+                            value="{{ request.POST.username }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Email -->
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter email address"
+                            value="{{ request.POST.email }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Password -->
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="password">
+                                Password
+                            </label>
+
+                            <div class="password-wrapper">
+
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    placeholder="Enter password"
+                                    minlength="8"
+                                    required
+                                >
+
+                                <button
+                                    type="button"
+                                    class="password-toggle"
+                                    onclick="togglePassword('password', this)"
+                                    aria-label="Show password"
+                                    title="Show password"
+                                >
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+
+                                        <path
+                                            d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"
+                                        ></path>
+
+                                        <circle
+                                            cx="12"
+                                            cy="12"
+                                            r="3"
+                                        ></circle>
+
+                                    </svg>
+
+                                </button>
+
+                            </div>
+
+                            <div class="help-text">
+                                Minimum 8 characters with uppercase,
+                                lowercase and number.
+                            </div>
+
+                        </div>
+
+
+                        <!-- Confirm Password -->
+
+                        <div class="form-group">
+
+                            <label for="confirm_password">
+                                Confirm Password
+                            </label>
+
+                            <div class="password-wrapper">
+
+                                <input
+                                    type="password"
+                                    id="confirm_password"
+                                    name="confirm_password"
+                                    placeholder="Confirm password"
+                                    minlength="8"
+                                    required
+                                >
+
+                                <button
+                                    type="button"
+                                    class="password-toggle"
+                                    onclick="togglePassword('confirm_password', this)"
+                                    aria-label="Show password"
+                                    title="Show password"
+                                >
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+
+                                        <path
+                                            d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"
+                                        ></path>
+
+                                        <circle
+                                            cx="12"
+                                            cy="12"
+                                            r="3"
+                                        ></circle>
+
+                                    </svg>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Current Club -->
+
+                    <div class="form-group">
+
+                        <label for="current_club">
+                            Current Club
+                        </label>
+
+                        <input
+                            type="text"
+                            id="current_club"
+                            name="current_club"
+                            placeholder="Enter current club"
+                            value="{{ request.POST.current_club }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Certificate -->
+
+                    <div class="form-group">
+
+                        <label for="certificate">
+                            Certificate
+                        </label>
+
+                        <input
+                            type="file"
+                            id="certificate"
+                            name="certificate"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            required
+                        >
+
+                        <div class="help-text">
+                            Accepted formats: PDF, JPG, JPEG, PNG.
+                            Maximum file size: 5 MB.
+                        </div>
+
+                    </div>
+
+
+                    <!-- Submit -->
+
+                    <button
+                        type="submit"
+                        class="register-btn"
+                    >
+                        Create Scout Account
+                    </button>
+
+                </form>
+
+
+                <!-- Login -->
+
+                <div class="login-text">
+
+                    Already have an account?
+
+                    <a href="{% url 'login' %}">
+                        Login
+                    </a>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        function togglePassword(inputId, button) {
+
+            const input = document.getElementById(inputId);
+
+            if (input.type === "password") {
+
+                input.type = "text";
+
+                button.setAttribute(
+                    "aria-label",
+                    "Hide password"
+                );
+
+                button.setAttribute(
+                    "title",
+                    "Hide password"
+                );
+
+            } else {
+
+                input.type = "password";
+
+                button.setAttribute(
+                    "aria-label",
+                    "Show password"
+                );
+
+                button.setAttribute(
+                    "title",
+                    "Show password"
+                );
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

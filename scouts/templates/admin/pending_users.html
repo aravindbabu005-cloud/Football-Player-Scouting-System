@@ -1,0 +1,1578 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pending Users - Player Scouting System</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #010101;
+            --bg: #050505;
+            --sidebar: #080b0a;
+            --card: #0d110f;
+            --card-hover: #111713;
+
+            --green: #35c98b;
+            --green-light: #63e0ad;
+            --green-dark: #123b2e;
+
+            --muted: #9aa9a3;
+            --muted-light: #c0cbc6;
+
+            --border: rgba(53, 201, 139, 0.25);
+
+            --red: #e74c3c;
+            --red-light: #ff7568;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background: var(--bg);
+
+            color: #ffffff;
+
+            font-family: "Teko", sans-serif;
+
+            letter-spacing: 0.5px;
+
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+
+            position: fixed;
+
+            top: 0;
+            left: 260px;
+            right: 0;
+            bottom: 0;
+
+            pointer-events: none;
+
+            background:
+                radial-gradient(
+                    circle at 75% 10%,
+                    rgba(53, 201, 139, 0.07),
+                    transparent 35%
+                );
+
+            z-index: -1;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* Sidebar */
+
+        .sidebar {
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 260px;
+            height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+
+            padding: 30px 18px 20px;
+
+            background: var(--sidebar);
+
+            border-right: 1px solid var(--border);
+
+            box-shadow:
+                8px 0 30px rgba(0, 0, 0, 0.35);
+
+            z-index: 1000;
+
+            animation: sidebarIn 0.7s ease both;
+        }
+
+        /* Brand */
+
+        .brand {
+            padding: 5px 10px 30px;
+
+            border-bottom: 1px solid rgba(53, 201, 139, 0.12);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-title {
+            color: #ffffff;
+
+            font-size: 27px;
+            font-weight: 600;
+
+            line-height: 1;
+
+            letter-spacing: 2px;
+        }
+
+        .brand-subtitle {
+            margin-top: 5px;
+
+            color: var(--green);
+
+            font-size: 15px;
+            font-weight: 500;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+        }
+
+        /* Navigation */
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+
+            gap: 8px;
+
+            margin-top: 28px;
+        }
+
+        .nav-label {
+            padding: 0 10px 10px;
+
+            color: var(--muted);
+
+            font-size: 15px;
+            font-weight: 500;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav a {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+
+            min-height: 50px;
+
+            padding: 0 17px;
+
+            color: var(--muted);
+
+            border: 1px solid transparent;
+            border-radius: 10px;
+
+            font-size: 18px;
+            font-weight: 500;
+
+            letter-spacing: 1.5px;
+
+            transition:
+                color 0.3s ease,
+                background 0.3s ease,
+                border-color 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        .sidebar-nav a::before {
+            content: "";
+
+            width: 6px;
+            height: 6px;
+
+            margin-right: 13px;
+
+            background: currentColor;
+
+            border-radius: 50%;
+
+            opacity: 0.5;
+
+            transition: 0.3s ease;
+        }
+
+        .sidebar-nav a:hover {
+            color: var(--green-light);
+
+            background: rgba(53, 201, 139, 0.07);
+
+            border-color: rgba(53, 201, 139, 0.16);
+
+            transform: translateX(4px);
+        }
+
+        .sidebar-nav a:hover::before {
+            opacity: 1;
+
+            box-shadow:
+                0 0 10px rgba(53, 201, 139, 0.7);
+        }
+
+        .sidebar-nav a.active {
+            color: var(--green-light);
+
+            background: rgba(53, 201, 139, 0.10);
+
+            border-color: rgba(53, 201, 139, 0.25);
+        }
+
+        .sidebar-nav a.active::before {
+            background: var(--green);
+
+            opacity: 1;
+
+            box-shadow:
+                0 0 10px rgba(53, 201, 139, 0.8);
+        }
+
+        /* Sidebar Bottom */
+
+        .sidebar-bottom {
+            margin-top: auto;
+
+            padding-top: 20px;
+
+            border-top: 1px solid rgba(53, 201, 139, 0.12);
+        }
+
+        .admin-status {
+            margin-bottom: 12px;
+
+            padding: 15px;
+
+            background: var(--card);
+
+            border: 1px solid var(--border);
+
+            border-radius: 12px;
+        }
+
+        .admin-status-label {
+            margin-bottom: 3px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+        }
+
+        .admin-status-value {
+            color: var(--green-light);
+
+            font-size: 18px;
+
+            font-weight: 600;
+
+            letter-spacing: 1px;
+        }
+
+        .logout-form {
+            width: 100%;
+        }
+
+        .logout-button {
+            width: 100%;
+
+            min-height: 45px;
+
+            background: transparent;
+
+            border: 1px solid rgba(231, 76, 60, 0.35);
+
+            border-radius: 10px;
+
+            color: var(--red-light);
+
+            font-size: 17px;
+
+            font-weight: 500;
+
+            letter-spacing: 1.5px;
+
+            cursor: pointer;
+
+            transition:
+                background 0.3s ease,
+                border-color 0.3s ease,
+                color 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        .logout-button:hover {
+            color: #ffffff;
+
+            background: rgba(231, 76, 60, 0.12);
+
+            border-color: rgba(231, 76, 60, 0.5);
+
+            transform: translateY(-2px);
+        }
+
+        /* Main */
+
+        .main-content {
+            width: calc(100% - 260px);
+
+            min-height: 100vh;
+
+            margin-left: 260px;
+
+            padding: 45px 35px 60px;
+
+            animation: fadeUp 0.7s ease both;
+        }
+
+        .content-container {
+            width: 100%;
+
+            max-width: 1400px;
+
+            margin: 0 auto;
+        }
+
+        /* Page Header */
+
+        .page-header {
+            margin-bottom: 38px;
+        }
+
+        .page-label {
+            margin-bottom: 6px;
+
+            color: var(--green);
+
+            font-size: 16px;
+
+            font-weight: 500;
+
+            letter-spacing: 3px;
+
+            text-transform: uppercase;
+        }
+
+        .page-header h1 {
+            color: #ffffff;
+
+            font-size: clamp(42px, 5vw, 60px);
+
+            font-weight: 600;
+
+            line-height: 0.95;
+
+            letter-spacing: 1px;
+        }
+
+        .page-header p {
+            max-width: 700px;
+
+            margin-top: 14px;
+
+            color: var(--muted);
+
+            font-size: 18px;
+
+            line-height: 1.3;
+
+            letter-spacing: 0.6px;
+        }
+
+        /* Messages */
+
+        .messages-container {
+            display: flex;
+            flex-direction: column;
+
+            gap: 10px;
+
+            margin-bottom: 25px;
+        }
+
+        .message-box {
+            padding: 13px 17px;
+
+            background: rgba(53, 201, 139, 0.07);
+
+            border: 1px solid rgba(53, 201, 139, 0.25);
+
+            border-radius: 11px;
+
+            color: var(--green-light);
+
+            font-size: 16px;
+
+            font-weight: 500;
+
+            animation: fadeUp 0.5s ease both;
+        }
+
+        /* Pending Section */
+
+        .pending-section {
+            width: 100%;
+
+            background: var(--card);
+
+            border: 1px solid var(--border);
+
+            border-radius: 15px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 18px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .section-header {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 22px 25px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(53, 201, 139, 0.08),
+                    rgba(53, 201, 139, 0.01)
+                );
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            color: #ffffff;
+
+            font-size: 27px;
+
+            font-weight: 600;
+
+            letter-spacing: 1px;
+        }
+
+        .section-title span {
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            min-width: 30px;
+            height: 27px;
+
+            padding: 0 8px;
+
+            background: var(--green-dark);
+
+            border: 1px solid rgba(53, 201, 139, 0.30);
+
+            border-radius: 20px;
+
+            color: var(--green-light);
+
+            font-size: 15px;
+
+            font-weight: 600;
+        }
+
+        .section-description {
+            color: var(--muted);
+
+            font-size: 16px;
+
+            letter-spacing: 0.5px;
+        }
+
+        /* Table */
+
+        .table-wrapper {
+            width: 100%;
+
+            overflow-x: auto;
+        }
+
+        .pending-table {
+            width: 100%;
+
+            min-width: 900px;
+
+            border-collapse: collapse;
+        }
+
+        .pending-table thead {
+            background: rgba(53, 201, 139, 0.025);
+        }
+
+        .pending-table th {
+            padding: 17px 20px;
+
+            border-bottom: 1px solid var(--border);
+
+            color: var(--muted);
+
+            font-size: 15px;
+
+            font-weight: 500;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+
+            text-align: left;
+
+            white-space: nowrap;
+        }
+
+        .pending-table td {
+            padding: 19px 20px;
+
+            border-bottom: 1px solid rgba(18, 59, 46, 0.55);
+
+            color: var(--muted-light);
+
+            font-size: 16px;
+
+            vertical-align: middle;
+        }
+
+        .pending-table tbody tr {
+            transition:
+                background 0.25s ease,
+                transform 0.25s ease;
+        }
+
+        .pending-table tbody tr:hover {
+            background: rgba(53, 201, 139, 0.035);
+        }
+
+        .pending-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Username */
+
+        .username {
+            color: #ffffff;
+
+            font-size: 19px;
+
+            font-weight: 600;
+
+            letter-spacing: 0.5px;
+        }
+
+        .email {
+            color: var(--muted);
+
+            font-size: 16px;
+        }
+
+        /* Role */
+
+        .role-badge {
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 5px 11px;
+
+            background: var(--green-dark);
+
+            border: 1px solid rgba(53, 201, 139, 0.25);
+
+            border-radius: 30px;
+
+            color: var(--green-light);
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+        }
+
+        /* Certificate */
+
+        .certificate-link {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            color: var(--green);
+
+            font-size: 16px;
+
+            font-weight: 600;
+
+            transition: color 0.2s ease;
+        }
+
+        .certificate-link:hover {
+            color: var(--green-light);
+        }
+
+        .no-certificate {
+            color: var(--muted);
+
+            font-size: 15px;
+        }
+
+        /* Actions */
+
+        .action-container {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+        }
+
+        .action-form {
+            margin: 0;
+        }
+
+        .approve-button,
+        .reject-button {
+            min-width: 80px;
+
+            padding: 8px 14px;
+
+            border-radius: 9px;
+
+            font-size: 16px;
+
+            font-weight: 500;
+
+            letter-spacing: 0.8px;
+
+            cursor: pointer;
+
+            transition:
+                background 0.25s ease,
+                border-color 0.25s ease,
+                color 0.25s ease,
+                transform 0.25s ease;
+        }
+
+        .approve-button {
+            background: rgba(53, 201, 139, 0.08);
+
+            border: 1px solid rgba(53, 201, 139, 0.30);
+
+            color: var(--green-light);
+        }
+
+        .approve-button:hover {
+            background: var(--green);
+
+            border-color: var(--green);
+
+            color: #03100b;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 20px rgba(53, 201, 139, 0.15);
+        }
+
+        .reject-button {
+            background: rgba(255, 92, 92, 0.05);
+
+            border: 1px solid rgba(255, 92, 92, 0.22);
+
+            color: #ff8585;
+        }
+
+        .reject-button:hover {
+            background: rgba(255, 92, 92, 0.12);
+
+            border-color: rgba(255, 92, 92, 0.40);
+
+            color: #ff9a9a;
+
+            transform: translateY(-2px);
+        }
+
+        /* Empty State */
+
+        .empty-state {
+            padding: 70px 30px;
+
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 62px;
+            height: 62px;
+
+            margin: 0 auto 18px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: var(--green-dark);
+
+            border: 1px solid rgba(53, 201, 139, 0.25);
+
+            border-radius: 18px;
+
+            color: var(--green-light);
+
+            font-size: 28px;
+
+            font-weight: 600;
+
+            box-shadow:
+                0 0 30px rgba(53, 201, 139, 0.08);
+        }
+
+        .empty-state h3 {
+            margin-bottom: 7px;
+
+            color: #ffffff;
+
+            font-size: 28px;
+
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            max-width: 450px;
+
+            margin: 0 auto;
+
+            color: var(--muted);
+
+            font-size: 16px;
+
+            line-height: 1.5;
+        }
+
+        /* Back Button */
+
+        .back-wrapper {
+            margin-top: 24px;
+        }
+
+        .back-button {
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            min-height: 44px;
+
+            padding: 0 18px;
+
+            background: rgba(53, 201, 139, 0.05);
+
+            border: 1px solid var(--border);
+
+            border-radius: 10px;
+
+            color: var(--green-light);
+
+            font-size: 16px;
+
+            font-weight: 500;
+
+            letter-spacing: 1px;
+
+            transition:
+                background 0.25s ease,
+                border-color 0.25s ease,
+                transform 0.25s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(53, 201, 139, 0.10);
+
+            border-color: rgba(53, 201, 139, 0.35);
+
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        @keyframes sidebarIn {
+
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+        }
+
+        /* Tablet */
+
+        @media (max-width: 1100px) {
+
+            .sidebar {
+                width: 230px;
+            }
+
+            body::before {
+                left: 230px;
+            }
+
+            .main-content {
+                width: calc(100% - 230px);
+
+                margin-left: 230px;
+
+                padding: 38px 28px 50px;
+            }
+
+            .pending-table {
+                min-width: 850px;
+            }
+
+        }
+
+        /* Mobile */
+
+        @media (max-width: 768px) {
+
+            body::before {
+                left: 0;
+            }
+
+            .sidebar {
+                position: relative;
+
+                width: 100%;
+
+                height: auto;
+
+                padding: 22px 18px;
+
+                border-right: none;
+
+                border-bottom: 1px solid var(--border);
+
+                box-shadow: none;
+            }
+
+            .brand {
+                padding-bottom: 20px;
+            }
+
+            .sidebar-nav {
+                display: grid;
+
+                grid-template-columns: repeat(2, 1fr);
+
+                gap: 7px;
+
+                margin-top: 20px;
+            }
+
+            .nav-label {
+                grid-column: 1 / -1;
+
+                padding-bottom: 5px;
+            }
+
+            .sidebar-nav a {
+                min-height: 46px;
+            }
+
+            .sidebar-bottom {
+                display: grid;
+
+                grid-template-columns: 1fr 1fr;
+
+                gap: 10px;
+
+                margin-top: 20px;
+
+                padding-top: 16px;
+            }
+
+            .admin-status {
+                margin-bottom: 0;
+            }
+
+            .logout-form {
+                display: flex;
+            }
+
+            .logout-button {
+                height: 100%;
+            }
+
+            .main-content {
+                width: 100%;
+
+                margin-left: 0;
+
+                padding: 35px 22px 45px;
+            }
+
+            .page-header {
+                margin-bottom: 28px;
+            }
+
+            .page-header h1 {
+                font-size: 45px;
+            }
+
+            .page-header p {
+                font-size: 17px;
+            }
+
+            .section-header {
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                padding: 20px;
+            }
+
+            .section-description {
+                display: none;
+            }
+
+            .pending-table {
+                display: block;
+
+                min-width: 0;
+            }
+
+            .pending-table thead {
+                display: none;
+            }
+
+            .pending-table tbody,
+            .pending-table tr,
+            .pending-table td {
+                display: block;
+
+                width: 100%;
+            }
+
+            .pending-table tbody tr {
+                padding: 20px;
+
+                border-bottom: 1px solid var(--border);
+            }
+
+            .pending-table tbody tr:last-child {
+                border-bottom: none;
+            }
+
+            .pending-table td {
+                display: flex;
+
+                align-items: center;
+
+                justify-content: space-between;
+
+                gap: 18px;
+
+                padding: 8px 0;
+
+                border: none;
+
+                text-align: right;
+            }
+
+            .pending-table td::before {
+                content: attr(data-label);
+
+                flex-shrink: 0;
+
+                color: var(--muted);
+
+                font-size: 14px;
+
+                font-weight: 500;
+
+                letter-spacing: 1px;
+
+                text-transform: uppercase;
+
+                text-align: left;
+            }
+
+            .pending-table td:first-child {
+                padding-top: 0;
+            }
+
+            .pending-table td:last-child {
+                padding-bottom: 0;
+            }
+
+            .pending-table td[data-label="Actions"] {
+                align-items: flex-end;
+
+                flex-direction: column;
+
+                padding-top: 14px;
+
+                margin-top: 8px;
+
+                border-top: 1px solid rgba(18, 59, 46, 0.6);
+            }
+
+            .pending-table td[data-label="Actions"]::before {
+                width: 100%;
+            }
+
+            .action-container {
+                justify-content: flex-end;
+
+                width: 100%;
+            }
+
+        }
+
+        /* Small Mobile */
+
+        @media (max-width: 560px) {
+
+            .sidebar {
+                padding: 20px 14px;
+            }
+
+            .brand {
+                padding-left: 6px;
+                padding-right: 6px;
+            }
+
+            .brand-title {
+                font-size: 23px;
+            }
+
+            .brand-subtitle {
+                font-size: 13px;
+            }
+
+            .sidebar-nav {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-nav a {
+                min-height: 43px;
+            }
+
+            .sidebar-bottom {
+                grid-template-columns: 1fr;
+            }
+
+            .main-content {
+                padding: 30px 16px 40px;
+            }
+
+            .page-header h1 {
+                font-size: 39px;
+            }
+
+            .page-header p {
+                font-size: 16px;
+            }
+
+            .pending-section {
+                border-radius: 13px;
+            }
+
+            .section-header {
+                padding: 18px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .pending-table tbody tr {
+                padding: 17px;
+            }
+
+            .pending-table td {
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 5px;
+
+                text-align: left;
+            }
+
+            .pending-table td::before {
+                font-size: 12px;
+            }
+
+            .pending-table td[data-label="Actions"] {
+                align-items: flex-start;
+            }
+
+            .action-container {
+                justify-content: flex-start;
+            }
+
+            .approve-button,
+            .reject-button {
+                min-width: 82px;
+
+                min-height: 38px;
+            }
+
+            .empty-state {
+                padding: 55px 20px;
+            }
+
+            .back-button {
+                width: 100%;
+            }
+
+        }
+
+        /* Reduced Motion */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div>
+
+            <div class="brand">
+
+                <div class="brand-text">
+
+                    <div class="brand-title">
+                        PLAYER SCOUTING
+                    </div>
+
+                    <div class="brand-subtitle">
+                        Admin Panel
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+                <div class="nav-label">
+                    Management
+                </div>
+
+                <a href="{% url 'admin_dashboard' %}">
+                    Dashboard
+                </a>
+
+                <a href="{% url 'pending_users' %}" class="active">
+                    Pending Users
+                </a>
+
+                <a href="{% url 'view_scouts' %}">
+                    Scouts
+                </a>
+
+                <a href="{% url 'view_academies' %}">
+                    Academies
+                </a>
+
+            </nav>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="admin-status">
+
+                <div class="admin-status-label">
+                    Account
+                </div>
+
+                <div class="admin-status-value">
+                    Administrator
+                </div>
+
+            </div>
+
+
+            <form
+                method="POST"
+                action="{% url 'logout' %}"
+                class="logout-form"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    Logout
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <div class="content-container">
+
+            <header class="page-header">
+
+                <div class="page-label">
+                    User Management
+                </div>
+
+                <h1>
+                    Pending Users
+                </h1>
+
+                <p>
+                    Review registration requests and approve or reject
+                    scout and academy accounts before they can access
+                    the system.
+                </p>
+
+            </header>
+
+
+            {% if messages %}
+
+                <div class="messages-container">
+
+                    {% for message in messages %}
+
+                        <div class="message-box">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+
+            <section class="pending-section">
+
+                <div class="section-header">
+
+                    <div class="section-title">
+
+                        Pending Applications
+
+                        <span>
+                            {{ pending_users|length }}
+                        </span>
+
+                    </div>
+
+                    <div class="section-description">
+                        Accounts waiting for administrator approval
+                    </div>
+
+                </div>
+
+
+                {% if pending_users %}
+
+                    <div class="table-wrapper">
+
+                        <table class="pending-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Username
+                                    </th>
+
+                                    <th>
+                                        Email
+                                    </th>
+
+                                    <th>
+                                        Role
+                                    </th>
+
+                                    <th>
+                                        Certificate
+                                    </th>
+
+                                    <th>
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for profile in pending_users %}
+
+                                    <tr>
+
+                                        <td data-label="Username">
+
+                                            <span class="username">
+                                                {{ profile.user.username }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <td data-label="Email">
+
+                                            <span class="email">
+                                                {{ profile.user.email }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <td data-label="Role">
+
+                                            <span class="role-badge">
+                                                {{ profile.role|title }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <td data-label="Certificate">
+
+                                            {% if profile.certificate %}
+
+                                                <a
+                                                    href="{% url 'view_certificate' profile.id %}"
+                                                    class="certificate-link"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    View Certificate
+                                                </a>
+
+                                            {% else %}
+
+                                                <span class="no-certificate">
+                                                    No Certificate
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <td data-label="Actions">
+
+                                            <div class="action-container">
+
+                                                <form
+                                                    method="POST"
+                                                    action="{% url 'approve_user' profile.id %}"
+                                                    class="action-form"
+                                                >
+
+                                                    {% csrf_token %}
+
+                                                    <button
+                                                        type="submit"
+                                                        class="approve-button"
+                                                    >
+                                                        Approve
+                                                    </button>
+
+                                                </form>
+
+
+                                                <form
+                                                    method="POST"
+                                                    action="{% url 'reject_user' profile.id %}"
+                                                    class="action-form"
+                                                >
+
+                                                    {% csrf_token %}
+
+                                                    <button
+                                                        type="submit"
+                                                        class="reject-button"
+                                                    >
+                                                        Reject
+                                                    </button>
+
+                                                </form>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">
+                            ✓
+                        </div>
+
+                        <h3>
+                            No Pending Users
+                        </h3>
+
+                        <p>
+                            There are currently no registration requests
+                            waiting for administrator approval.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+
+            <div class="back-wrapper">
+
+                <a
+                    href="{% url 'admin_dashboard' %}"
+                    class="back-button"
+                >
+                    ← Back to Dashboard
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        window.addEventListener("pageshow", function(event) {
+
+            if (event.persisted) {
+
+                window.location.reload();
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>

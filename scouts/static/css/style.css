@@ -1,0 +1,888 @@
+/* =====================================================
+   GLOBAL
+===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    background: #030303;
+    color: #ffffff;
+}
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.main-navbar {
+    position: relative;
+    height: 76px;
+    display: flex;
+    align-items: center;
+
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.88),
+            rgba(0, 0, 0, 0.94)
+        ),
+        url("../img/manager-main.jpg");
+
+    background-size: cover;
+    background-position: center 35%;
+
+    border-bottom: 1px solid rgba(53, 201, 139, 0.25);
+
+    z-index: 1000;
+}
+
+.main-navbar::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 1px;
+
+    background: #35c98b;
+
+    opacity: 0.45;
+
+    pointer-events: none;
+}
+
+.navbar-container {
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+}
+
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+.brand-logo {
+    width: 51px;
+    height: 51px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #35c98b;
+
+    text-decoration: none;
+
+    font-family: "Space Grotesk", sans-serif;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    border: 1px solid #35c98b;
+
+    background: rgba(0, 0, 0, 0.70);
+
+    transition: 0.3s ease;
+}
+
+.brand-logo:hover {
+    background: #35c98b;
+
+    color: #000000;
+
+    border-color: #35c98b;
+
+    box-shadow:
+        0 0 18px rgba(53, 201, 139, 0.35);
+}
+
+
+/* =====================================================
+   MAIN NAVIGATION
+===================================================== */
+
+.main-navigation {
+    display: flex;
+
+    align-items: center;
+
+    gap: 48px;
+
+    margin-left: 75px;
+
+    height: 100%;
+}
+
+.main-navigation a {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    height: 100%;
+
+    color: rgba(255, 255, 255, 0.92);
+
+    text-decoration: none;
+
+    font-family: "Space Grotesk", sans-serif;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    letter-spacing: 1px;
+
+    transition:
+        color 0.3s ease,
+        transform 0.3s ease;
+}
+
+.main-navigation a::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    bottom: 16px;
+
+    width: 0;
+
+    height: 2px;
+
+    background: #35c98b;
+
+    transition: width 0.3s ease;
+}
+
+.main-navigation a:hover {
+    color: #35c98b;
+
+    transform: translateY(-1px);
+}
+
+.main-navigation a:hover::after {
+    width: 100%;
+}
+
+
+/* =====================================================
+   RIGHT NAVIGATION
+===================================================== */
+
+.nav-right {
+    margin-left: auto;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 22px;
+}
+
+.nav-right a {
+    color: rgba(255, 255, 255, 0.92);
+
+    text-decoration: none;
+
+    font-family: "Space Grotesk", sans-serif;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    letter-spacing: 1px;
+
+    transition: 0.3s ease;
+}
+
+.nav-right a:hover {
+    color: #35c98b;
+}
+
+.nav-right .login {
+    color: #35c98b;
+}
+
+.nav-separator {
+    color: rgba(255, 255, 255, 0.30);
+
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   MAIN SCOUTING AREA
+===================================================== */
+
+.scouting-area {
+    position: relative;
+
+    width: 100%;
+
+    height: calc(100vh - 76px);
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            #164a3a 0%,
+            #102f2b 22%,
+            #101d1c 42%,
+            #080b0b 70%,
+            #020303 100%
+        );
+}
+
+
+/* =====================================================
+   GREEN BACKGROUND GLOW
+===================================================== */
+
+.scouting-area::before {
+    content: "";
+
+    position: absolute;
+
+    width: 850px;
+    height: 850px;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    background: #35c98b;
+
+    opacity: 0.075;
+
+    border-radius: 50%;
+
+    filter: blur(130px);
+}
+
+
+/* =====================================================
+   SCOUTING LABEL
+===================================================== */
+
+.scouting-label {
+    position: absolute;
+
+    top: 42px;
+    left: 50px;
+
+    z-index: 20;
+
+    font-family: "Space Grotesk", sans-serif;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    letter-spacing: 5px;
+
+    color: rgba(255, 255, 255, 0.50);
+}
+
+.scouting-label span {
+    color: #35c98b;
+}
+
+
+/* =====================================================
+   CARD STAGE
+===================================================== */
+
+.card-stage {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+/* =====================================================
+   PLAYER CARD
+   SLIGHTLY SMALLER
+===================================================== */
+
+.player-card {
+    position: absolute;
+
+    width: 285px;
+    height: 450px;
+
+    overflow: hidden;
+
+    border-radius: 8px;
+
+    background: #101313;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    box-shadow:
+        0 30px 70px rgba(0, 0, 0, 0.90);
+
+    animation:
+        playerCarousel 16s
+        infinite
+        ease-in-out;
+
+    will-change:
+        transform,
+        opacity;
+}
+
+
+/* =====================================================
+   PLAYER IMAGE
+   COLOURED
+===================================================== */
+
+.player-card img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    /* Keep images coloured */
+    filter:
+        saturate(1.08)
+        contrast(1.05);
+
+    transition: 0.5s ease;
+}
+
+.player-card:hover img {
+    transform: scale(1.03);
+
+    filter:
+        saturate(1.15)
+        contrast(1.08);
+}
+
+
+/* =====================================================
+   CARD DARK OVERLAY
+===================================================== */
+
+.player-card::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 1;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.05) 10%,
+            rgba(0, 0, 0, 0.10) 35%,
+            rgba(0, 0, 0, 0.60) 65%,
+            rgba(0, 0, 0, 0.97) 100%
+        );
+}
+
+
+/* =====================================================
+   GREEN CARD LINE
+===================================================== */
+
+.player-card::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 4px;
+
+    background: #35c98b;
+
+    z-index: 5;
+
+    opacity: 0.9;
+}
+
+
+/* =====================================================
+   CARD INFORMATION
+===================================================== */
+
+.player-info {
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+
+    width: 100%;
+
+    padding: 27px 24px 24px;
+
+    z-index: 5;
+}
+
+.player-category {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #35c98b;
+
+    font-family: "Space Grotesk", sans-serif;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 3px;
+}
+
+.player-info h2 {
+    margin: 0 0 8px;
+
+    color: #ffffff;
+
+    font-family: "Space Grotesk", sans-serif;
+
+    font-size: 27px;
+
+    font-weight: 700;
+
+    letter-spacing: -0.6px;
+
+    line-height: 1.1;
+}
+
+.player-info p {
+    margin: 0;
+
+    color: rgba(255, 255, 255, 0.68);
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+/* =====================================================
+   CARD DELAYS
+===================================================== */
+
+.player-1 {
+    animation-delay: 0s;
+}
+
+.player-2 {
+    animation-delay: -3.2s;
+}
+
+.player-3 {
+    animation-delay: -6.4s;
+}
+
+.player-4 {
+    animation-delay: -9.6s;
+}
+
+.player-5 {
+    animation-delay: -12.8s;
+}
+
+
+/* =====================================================
+   CARD CAROUSEL
+===================================================== */
+
+@keyframes playerCarousel {
+
+    /* FAR RIGHT */
+    0% {
+        transform:
+            translateX(580px)
+            scale(0.70);
+
+        opacity: 0.20;
+
+        z-index: 1;
+    }
+
+    /* RIGHT */
+    20% {
+        transform:
+            translateX(320px)
+            scale(0.88);
+
+        opacity: 0.62;
+
+        z-index: 2;
+    }
+
+    /* CENTER */
+    40% {
+        transform:
+            translateX(0)
+            scale(1.10);
+
+        opacity: 1;
+
+        z-index: 10;
+
+        border-color:
+            rgba(53, 201, 139, 0.95);
+
+        box-shadow:
+            0 40px 100px rgba(0, 0, 0, 0.95),
+            0 0 45px rgba(53, 201, 139, 0.28);
+    }
+
+    /* LEFT */
+    60% {
+        transform:
+            translateX(-320px)
+            scale(0.88);
+
+        opacity: 0.62;
+
+        z-index: 2;
+    }
+
+    /* FAR LEFT */
+    80% {
+        transform:
+            translateX(-580px)
+            scale(0.70);
+
+        opacity: 0.20;
+
+        z-index: 1;
+    }
+
+    /* RESET */
+    100% {
+        transform:
+            translateX(580px)
+            scale(0.70);
+
+        opacity: 0.20;
+
+        z-index: 1;
+    }
+}
+
+
+/* =====================================================
+   PAUSE ON HOVER
+===================================================== */
+
+.card-stage:hover .player-card {
+    animation-play-state: paused;
+}
+
+
+/* =====================================================
+   BOTTOM LINE
+===================================================== */
+
+.bottom-line {
+    position: absolute;
+
+    left: 50%;
+
+    bottom: 22px;
+
+    transform:
+        translateX(-50%);
+
+    width: 90px;
+
+    height: 2px;
+
+    background: #35c98b;
+
+    opacity: 0.55;
+
+    z-index: 20;
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 1000px) {
+
+    .main-navigation {
+        gap: 25px;
+        margin-left: 35px;
+    }
+
+    .main-navigation a {
+        font-size: 11px;
+    }
+
+    .nav-right a {
+        font-size: 10px;
+    }
+
+    .player-card {
+        width: 250px;
+        height: 400px;
+    }
+
+    @keyframes playerCarousel {
+
+        0% {
+            transform:
+                translateX(480px)
+                scale(0.70);
+
+            opacity: 0.20;
+        }
+
+        20% {
+            transform:
+                translateX(270px)
+                scale(0.85);
+
+            opacity: 0.60;
+        }
+
+        40% {
+            transform:
+                translateX(0)
+                scale(1.08);
+
+            opacity: 1;
+
+            z-index: 10;
+        }
+
+        60% {
+            transform:
+                translateX(-270px)
+                scale(0.85);
+
+            opacity: 0.60;
+        }
+
+        80% {
+            transform:
+                translateX(-480px)
+                scale(0.70);
+
+            opacity: 0.20;
+        }
+
+        100% {
+            transform:
+                translateX(480px)
+                scale(0.70);
+
+            opacity: 0.20;
+        }
+    }
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+    body {
+        overflow: auto;
+    }
+
+    .main-navbar {
+        height: auto;
+        min-height: 70px;
+        padding: 10px 0;
+    }
+
+    .navbar-container {
+        flex-wrap: wrap;
+    }
+
+    .main-navigation {
+        order: 3;
+
+        width: 100%;
+
+        margin: 15px 0 0;
+
+        justify-content: center;
+
+        gap: 15px;
+
+        flex-wrap: wrap;
+    }
+
+    .main-navigation a {
+        height: auto;
+        font-size: 9px;
+    }
+
+    .main-navigation a::after {
+        bottom: -4px;
+    }
+
+    .nav-right {
+        gap: 8px;
+    }
+
+    .nav-right a {
+        font-size: 9px;
+    }
+
+    .scouting-area {
+        height: calc(100vh - 125px);
+        min-height: 550px;
+    }
+
+    .scouting-label {
+        top: 22px;
+        left: 20px;
+        font-size: 11px;
+    }
+
+    .player-card {
+        width: 190px;
+        height: 310px;
+    }
+
+    .player-info {
+        padding: 18px;
+    }
+
+    .player-category {
+        font-size: 8px;
+    }
+
+    .player-info h2 {
+        font-size: 20px;
+    }
+
+    .player-info p {
+        font-size: 10px;
+    }
+
+    @keyframes playerCarousel {
+
+        0% {
+            transform:
+                translateX(330px)
+                scale(0.62);
+
+            opacity: 0.20;
+        }
+
+        20% {
+            transform:
+                translateX(170px)
+                scale(0.75);
+
+            opacity: 0.60;
+        }
+
+        40% {
+            transform:
+                translateX(0)
+                scale(1.05);
+
+            opacity: 1;
+
+            z-index: 10;
+        }
+
+        60% {
+            transform:
+                translateX(-170px)
+                scale(0.75);
+
+            opacity: 0.60;
+        }
+
+        80% {
+            transform:
+                translateX(-330px)
+                scale(0.62);
+
+            opacity: 0.20;
+        }
+
+        100% {
+            transform:
+                translateX(330px)
+                scale(0.62);
+
+            opacity: 0.20;
+        }
+    }
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 450px) {
+
+    .main-navigation {
+        gap: 9px;
+    }
+
+    .main-navigation a {
+        font-size: 8px;
+    }
+
+    .player-card {
+        width: 160px;
+        height: 270px;
+    }
+
+    .player-info h2 {
+        font-size: 17px;
+    }
+
+    .player-info p {
+        display: none;
+    }
+}

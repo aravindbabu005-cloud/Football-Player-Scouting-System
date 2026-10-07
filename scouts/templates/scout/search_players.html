@@ -1,0 +1,2385 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Search Players | Player Scouting System</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+
+        :root {
+            --bg: #050505;
+            --surface: #080b0a;
+            --surface-light: #0d110f;
+            --surface-hover: #111713;
+
+            --green: #35c98b;
+            --green-light: #63e0ad;
+            --green-dark: #123b2e;
+
+            --text: #ffffff;
+            --muted: #9aa9a3;
+            --muted-light: #c0cbc6;
+
+            --border: rgba(53, 201, 139, 0.25);
+
+            --danger: #e74c3c;
+            --danger-light: #ff7568;
+
+            --radius: 15px;
+
+            --font: "Teko", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: -300px;
+            right: -250px;
+            width: 650px;
+            height: 650px;
+            background: radial-gradient(
+                circle,
+                rgba(53, 201, 139, 0.08),
+                transparent 70%
+            );
+            pointer-events: none;
+            animation: glowPulse 6s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button,
+        input,
+        select {
+            font-family: var(--font);
+        }
+
+        /* Sidebar */
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            padding: 32px 20px 22px;
+
+            background: #080b0a;
+            border-right: 1px solid var(--border);
+
+            box-shadow: 8px 0 35px rgba(0, 0, 0, 0.35);
+
+            z-index: 1000;
+
+            animation: sidebarIn 0.7s ease both;
+        }
+
+        .brand {
+            margin-bottom: 40px;
+            padding-left: 5px;
+        }
+
+        .brand-title {
+            color: #ffffff;
+            font-size: 25px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+
+        .brand-title span {
+            color: var(--green);
+        }
+
+        .brand-subtitle {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .nav a {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 13px 14px;
+
+            color: var(--muted);
+
+            border: 1px solid transparent;
+            border-radius: 10px;
+
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 1px;
+
+            transition:
+                color 0.3s ease,
+                background 0.3s ease,
+                border 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        .nav a::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: #4c5752;
+
+            transition:
+                background 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .nav a:hover {
+            color: var(--green-light);
+            background: rgba(53, 201, 139, 0.06);
+            border-color: rgba(53, 201, 139, 0.12);
+            transform: translateX(3px);
+        }
+
+        .nav a:hover::before {
+            background: var(--green);
+            box-shadow: 0 0 8px rgba(53, 201, 139, 0.7);
+        }
+
+        .nav a.active {
+            color: var(--green);
+            background: rgba(53, 201, 139, 0.08);
+            border-color: rgba(53, 201, 139, 0.18);
+        }
+
+        .nav a.active::before {
+            background: var(--green);
+            box-shadow: 0 0 10px rgba(53, 201, 139, 0.75);
+        }
+
+        .sidebar-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .user-box {
+            padding: 16px;
+
+            background: var(--surface-light);
+            border: 1px solid rgba(53, 201, 139, 0.14);
+            border-radius: 12px;
+
+            transition:
+                border 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .user-box:hover {
+            border-color: var(--border);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(53, 201, 139, 0.06);
+        }
+
+        .user-label {
+            color: #6f7d77;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .username {
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 2px;
+            word-break: break-word;
+        }
+
+        .role {
+            color: var(--green);
+            font-size: 14px;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .logout-form {
+            width: 100%;
+        }
+
+        .logout-button {
+            width: 100%;
+
+            padding: 11px 15px;
+
+            background: transparent;
+            color: var(--danger-light);
+
+            border: 1px solid rgba(231, 76, 60, 0.35);
+            border-radius: 9px;
+
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 1px;
+
+            cursor: pointer;
+
+            transition:
+                background 0.3s ease,
+                color 0.3s ease,
+                border 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background: var(--danger);
+            color: #ffffff;
+            border-color: var(--danger);
+            transform: translateY(-2px);
+        }
+
+        /* Main */
+
+        .main {
+            width: calc(100% - 260px);
+            margin-left: 260px;
+            min-height: 100vh;
+            padding: 45px 35px;
+        }
+
+        .container-main {
+            width: 100%;
+            max-width: 1250px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+
+        .page-header {
+            margin-bottom: 35px;
+            animation: fadeUp 0.7s ease both;
+        }
+
+        .eyebrow {
+            color: var(--green);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .page-header h1 {
+            color: #ffffff;
+            font-size: 43px;
+            font-weight: 600;
+            line-height: 1;
+            letter-spacing: 1px;
+        }
+
+        .page-header h1 span {
+            color: var(--green);
+        }
+
+        .page-header p {
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.4;
+            margin-top: 12px;
+            max-width: 700px;
+        }
+
+        /* Buttons */
+
+        .header-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            padding: 10px 20px;
+
+            color: var(--green);
+            background: transparent;
+
+            border: 1px solid var(--green);
+            border-radius: 9px;
+
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 1px;
+
+            transition:
+                background 0.3s ease,
+                color 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .header-button:hover {
+            background: var(--green);
+            color: #050505;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(53, 201, 139, 0.18);
+        }
+
+        .header-button .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .header-button:hover .arrow {
+            transform: translateX(-3px);
+        }
+
+        /* Search Panel */
+
+        .search-panel {
+            position: relative;
+
+            background: var(--surface);
+
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+
+            padding: 28px;
+
+            margin-bottom: 45px;
+
+            overflow: hidden;
+
+            animation: fadeUp 0.8s ease both;
+        }
+
+        .search-panel::before {
+            content: "";
+
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 3px;
+
+            background: var(--green);
+
+            transform-origin: center;
+
+            animation: linePulse 4s ease-in-out infinite;
+        }
+
+        .panel-title {
+            color: #ffffff;
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .panel-subtitle {
+            color: var(--muted);
+            font-size: 15px;
+            margin-top: 2px;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            width: 100%;
+
+            color: var(--green-light);
+
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+
+            margin-top: 15px;
+            margin-bottom: 15px;
+
+            padding-bottom: 7px;
+
+            border-bottom: 1px solid rgba(53, 201, 139, 0.15);
+        }
+
+        .form-label {
+            color: var(--muted-light);
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.7px;
+            margin-bottom: 5px;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 44px;
+
+            background: #050706;
+            color: #ffffff;
+
+            border: 1px solid #29332f;
+            border-radius: 8px;
+
+            padding: 8px 12px;
+
+            font-size: 15px;
+
+            transition:
+                border 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .form-control::placeholder {
+            color: #59635f;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            background: #050706;
+            color: #ffffff;
+
+            border-color: var(--green);
+
+            box-shadow: 0 0 0 3px rgba(53, 201, 139, 0.08);
+
+            outline: none;
+        }
+
+        .form-select option {
+            background: #0b0f0d;
+            color: #ffffff;
+        }
+
+        /* Search Actions */
+
+        .search-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .search-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            padding: 10px 22px;
+
+            color: var(--green);
+            background: transparent;
+
+            border: 1px solid var(--green);
+            border-radius: 9px;
+
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 1px;
+
+            cursor: pointer;
+
+            transition:
+                background 0.3s ease,
+                color 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: var(--green);
+            color: #050505;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(53, 201, 139, 0.18);
+        }
+
+        .search-btn .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .search-btn:hover .arrow {
+            transform: translateX(3px);
+        }
+
+        .reset-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 10px 22px;
+
+            color: var(--muted);
+
+            border: 1px solid #303834;
+            border-radius: 9px;
+
+            font-size: 16px;
+            letter-spacing: 1px;
+
+            transition:
+                color 0.3s ease,
+                border 0.3s ease,
+                background 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            color: #ffffff;
+            border-color: #59635f;
+            background: rgba(255, 255, 255, 0.03);
+            transform: translateY(-2px);
+        }
+
+        /* Results */
+
+        .results-header {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+
+            margin-bottom: 20px;
+
+            animation: fadeUp 0.9s ease both;
+        }
+
+        .results-title {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .results-title::after {
+            content: "";
+            display: block;
+
+            width: 55px;
+            height: 3px;
+
+            margin-top: 4px;
+
+            background: var(--green);
+
+            border-radius: 3px;
+        }
+
+        .results-info {
+            color: var(--muted);
+            font-size: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Player Cards */
+
+        .player-card {
+            position: relative;
+
+            display: flex;
+            flex-direction: column;
+
+            height: 100%;
+
+            background: var(--surface);
+
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+
+            padding: 22px;
+
+            overflow: hidden;
+
+            transition:
+                transform 0.35s ease,
+                border 0.35s ease,
+                box-shadow 0.35s ease;
+        }
+
+        .player-card::before {
+            content: "";
+
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 3px;
+
+            background: var(--green);
+
+            transform-origin: center;
+
+            animation: linePulse 4s ease-in-out infinite;
+        }
+
+        .player-card:hover {
+            transform: translateY(-6px);
+
+            border-color: rgba(53, 201, 139, 0.55);
+
+            box-shadow:
+                0 16px 35px rgba(0, 0, 0, 0.35),
+                0 0 25px rgba(53, 201, 139, 0.07);
+        }
+
+        .match-badge {
+            position: absolute;
+
+            top: 18px;
+            right: 18px;
+
+            padding: 5px 11px;
+
+            color: #050505;
+            background: var(--green);
+
+            border-radius: 20px;
+
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.7px;
+
+            z-index: 2;
+        }
+
+        .player-photo {
+            width: 125px;
+            height: 125px;
+
+            object-fit: cover;
+
+            display: block;
+
+            margin: 10px auto 18px;
+
+            border-radius: 12px;
+
+            border: 1px solid rgba(53, 201, 139, 0.22);
+
+            background: #111512;
+
+            transition:
+                transform 0.35s ease,
+                border 0.35s ease,
+                box-shadow 0.35s ease;
+        }
+
+        .player-card:hover .player-photo {
+            transform: scale(1.04);
+
+            border-color: rgba(53, 201, 139, 0.5);
+
+            box-shadow: 0 8px 25px rgba(53, 201, 139, 0.1);
+        }
+
+        .no-photo {
+            width: 125px;
+            height: 125px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin: 10px auto 18px;
+
+            color: #66716c;
+
+            background: #111512;
+
+            border: 1px solid #242b28;
+
+            border-radius: 12px;
+
+            font-size: 16px;
+        }
+
+        .player-name {
+            color: #ffffff;
+
+            text-align: center;
+
+            font-size: 25px;
+            font-weight: 600;
+            letter-spacing: 1px;
+
+            margin-bottom: 16px;
+        }
+
+        .player-info {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+
+            color: var(--muted);
+
+            font-size: 15px;
+            line-height: 1.25;
+
+            padding: 6px 0;
+
+            border-bottom: 1px solid rgba(255, 255, 255, 0.035);
+        }
+
+        .player-info strong {
+            color: var(--muted-light);
+            font-weight: 500;
+        }
+
+        .player-info span {
+            color: #ffffff;
+            text-align: right;
+        }
+
+        /* Skill Sections */
+
+        .skill-section {
+            margin-top: 18px;
+            padding-top: 15px;
+
+            border-top: 1px solid rgba(53, 201, 139, 0.13);
+        }
+
+        .skill-title {
+            color: var(--green-light);
+
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 1px;
+
+            margin-bottom: 10px;
+        }
+
+        .skill-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            color: var(--muted);
+
+            font-size: 15px;
+
+            margin-bottom: 5px;
+        }
+
+        .skill-row strong {
+            min-width: 35px;
+
+            color: #ffffff;
+
+            text-align: right;
+
+            font-weight: 500;
+        }
+
+        /* Progress */
+
+        .skill-progress {
+            width: 100%;
+            height: 3px;
+
+            margin-top: 2px;
+            margin-bottom: 9px;
+
+            background: #18201c;
+
+            border-radius: 5px;
+
+            overflow: hidden;
+        }
+
+        .skill-progress span {
+            display: block;
+
+            height: 100%;
+
+            background: var(--green);
+
+            border-radius: 5px;
+        }
+
+        /* Player Actions */
+
+        .player-actions {
+            margin-top: auto;
+            padding-top: 20px;
+        }
+
+        .shortlist-btn {
+            width: 100%;
+
+            padding: 10px;
+
+            color: var(--green);
+
+            background: transparent;
+
+            border: 1px solid var(--green);
+            border-radius: 9px;
+
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 1px;
+
+            cursor: pointer;
+
+            transition:
+                background 0.3s ease,
+                color 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .shortlist-btn:hover {
+            background: var(--green);
+            color: #050505;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 25px rgba(53, 201, 139, 0.18);
+        }
+
+        .shortlisted-btn {
+            width: 100%;
+
+            padding: 10px;
+
+            color: var(--green-light);
+
+            background: rgba(53, 201, 139, 0.07);
+
+            border: 1px solid rgba(53, 201, 139, 0.3);
+
+            border-radius: 9px;
+
+            text-align: center;
+
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        /* Empty */
+
+        .empty-box {
+            position: relative;
+
+            padding: 70px 25px;
+
+            background: var(--surface);
+
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+
+            text-align: center;
+
+            overflow: hidden;
+        }
+
+        .empty-box::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 3px;
+
+            background: var(--green);
+        }
+
+        .empty-box h5 {
+            color: #ffffff;
+
+            font-size: 25px;
+            font-weight: 600;
+            letter-spacing: 1px;
+
+            margin-bottom: 7px;
+        }
+
+        .empty-box p {
+            color: var(--muted);
+
+            font-size: 16px;
+
+            margin: 0;
+        }
+
+        /* Footer */
+
+        .page-footer {
+            text-align: center;
+
+            margin-top: 60px;
+            padding-top: 25px;
+
+            border-top: 1px solid rgba(53, 201, 139, 0.12);
+
+            color: #59635f;
+
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        /* Animations */
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        @keyframes sidebarIn {
+
+            from {
+                opacity: 0;
+                transform: translateX(-25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+        }
+
+        @keyframes glowPulse {
+
+            0% {
+                opacity: 0.35;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 0.35;
+            }
+
+        }
+
+        @keyframes linePulse {
+
+            0% {
+                opacity: 0.45;
+                transform: scaleX(0.7);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+
+            100% {
+                opacity: 0.45;
+                transform: scaleX(0.7);
+            }
+
+        }
+
+        /* Tablet */
+
+        @media (max-width: 1100px) {
+
+            .sidebar {
+                width: 230px;
+            }
+
+            .main {
+                width: calc(100% - 230px);
+                margin-left: 230px;
+            }
+
+            .main {
+                padding: 40px 25px;
+            }
+
+            .page-header h1 {
+                font-size: 38px;
+            }
+
+        }
+
+        /* Mobile */
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+                position: relative;
+
+                width: 100%;
+                height: auto;
+
+                min-height: auto;
+
+                padding: 22px 18px;
+
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .brand {
+                margin-bottom: 22px;
+            }
+
+            .nav {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .sidebar-bottom {
+                margin-top: 20px;
+            }
+
+            .main {
+                width: 100%;
+                margin-left: 0;
+
+                padding: 35px 18px;
+            }
+
+            .page-header h1 {
+                font-size: 36px;
+            }
+
+            .page-header p {
+                font-size: 16px;
+            }
+
+            .search-panel {
+                padding: 22px 18px;
+            }
+
+            .search-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-btn,
+            .reset-btn {
+                width: 100%;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+        }
+
+        @media (max-width: 560px) {
+
+            .brand-title {
+                font-size: 22px;
+            }
+
+            .nav {
+                grid-template-columns: 1fr;
+            }
+
+            .main {
+                padding: 30px 14px;
+            }
+
+            .page-header h1 {
+                font-size: 31px;
+            }
+
+            .panel-title {
+                font-size: 23px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .player-card {
+                padding: 18px;
+            }
+
+            .player-name {
+                font-size: 23px;
+            }
+
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div>
+
+            <div class="brand">
+
+                <div class="brand-title">
+                    PLAYER <span>SCOUTING</span>
+                </div>
+
+                <div class="brand-subtitle">
+                    Scout Panel
+                </div>
+
+            </div>
+
+            <nav class="nav">
+
+                <a href="{% url 'scout_dashboard' %}">
+                    Dashboard
+                </a>
+
+                <a href="{% url 'academy_lists' %}">
+                    Academies
+                </a>
+
+                <a href="{% url 'search_players' %}" class="active">
+                    Search Players
+                </a>
+
+                <a href="{% url 'shortlisted_players' %}">
+                    Shortlisted Players
+                </a>
+
+            </nav>
+
+        </div>
+
+        <div class="sidebar-bottom">
+
+            <div class="user-box">
+
+                <div class="user-label">
+                    Logged in as
+                </div>
+
+                <div class="username">
+                    {{ profile.user.username }}
+                </div>
+
+                <div class="role">
+                    Scout
+                </div>
+
+            </div>
+
+            <form
+                method="POST"
+                action="{% url 'logout' %}"
+                class="logout-form">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button">
+
+                    Logout
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <div class="container-main">
+
+            <header class="page-header">
+
+                <div class="eyebrow">
+                    Scouting Center
+                </div>
+
+                <h1>
+                    Search <span>Players</span>
+                </h1>
+
+                <p>
+                    Find players based on detailed scouting requirements
+                    and compare their abilities with your selected criteria.
+                </p>
+
+                <div style="margin-top: 20px;">
+
+                    <a
+                        href="{% url 'scout_dashboard' %}"
+                        class="header-button">
+
+                        <span class="arrow">←</span>
+                        Dashboard
+
+                    </a>
+
+                </div>
+
+            </header>
+
+
+            <section class="search-panel">
+
+                <div class="panel-title">
+                    Scouting Requirements
+                </div>
+
+                <div class="panel-subtitle">
+                    Enter the attributes you are looking for.
+                    The system will calculate a match percentage for every player.
+                </div>
+
+
+                <form method="GET">
+
+                    <div class="row g-3">
+
+                        <div class="section-title">
+                            Basic Information
+                        </div>
+
+
+                        <div class="col-lg-4 col-md-6">
+
+                            <label class="form-label">
+                                Position
+                            </label>
+
+                            <select
+                                name="position"
+                                class="form-select">
+
+                                <option value="">
+                                    Any Position
+                                </option>
+
+                                <option
+                                    value="Goalkeeper"
+                                    {% if position == "Goalkeeper" %}selected{% endif %}>
+                                    Goalkeeper
+                                </option>
+
+                                <option
+                                    value="Defender"
+                                    {% if position == "Defender" %}selected{% endif %}>
+                                    Defender
+                                </option>
+
+                                <option
+                                    value="Midfielder"
+                                    {% if position == "Midfielder" %}selected{% endif %}>
+                                    Midfielder
+                                </option>
+
+                                <option
+                                    value="Forward"
+                                    {% if position == "Forward" %}selected{% endif %}>
+                                    Forward
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-lg-4 col-md-6">
+
+                            <label class="form-label">
+                                Age
+                            </label>
+
+                            <input
+                                type="number"
+                                name="age"
+                                value="{{ age|default:'' }}"
+                                class="form-control"
+                                placeholder="Example: 20"
+                                min="1"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-4 col-md-6">
+
+                            <label class="form-label">
+                                Preferred Foot
+                            </label>
+
+                            <select
+                                name="preferred_foot"
+                                class="form-select">
+
+                                <option value="">
+                                    Any Foot
+                                </option>
+
+                                <option
+                                    value="Right"
+                                    {% if preferred_foot == "Right" %}selected{% endif %}>
+                                    Right
+                                </option>
+
+                                <option
+                                    value="Left"
+                                    {% if preferred_foot == "Left" %}selected{% endif %}>
+                                    Left
+                                </option>
+
+                                <option
+                                    value="Both"
+                                    {% if preferred_foot == "Both" %}selected{% endif %}>
+                                    Both
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Height
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.1"
+                                name="height"
+                                value="{{ height|default:'' }}"
+                                class="form-control"
+                                placeholder="Example: 175">
+
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Weight
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.1"
+                                name="weight"
+                                value="{{ weight|default:'' }}"
+                                class="form-control"
+                                placeholder="Example: 70">
+
+                        </div>
+
+
+                        <div class="section-title">
+                            Existing Skills
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Speed
+                            </label>
+
+                            <input
+                                type="number"
+                                name="speed"
+                                value="{{ speed|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Shooting
+                            </label>
+
+                            <input
+                                type="number"
+                                name="shooting"
+                                value="{{ shooting|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Passing
+                            </label>
+
+                            <input
+                                type="number"
+                                name="passing"
+                                value="{{ passing|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Dribbling
+                            </label>
+
+                            <input
+                                type="number"
+                                name="dribbling"
+                                value="{{ dribbling|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="section-title">
+                            Technical Skills
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Ball Control
+                            </label>
+
+                            <input
+                                type="number"
+                                name="ball_control"
+                                value="{{ ball_control|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Crossing
+                            </label>
+
+                            <input
+                                type="number"
+                                name="crossing"
+                                value="{{ crossing|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Finishing
+                            </label>
+
+                            <input
+                                type="number"
+                                name="finishing"
+                                value="{{ finishing|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Heading
+                            </label>
+
+                            <input
+                                type="number"
+                                name="heading"
+                                value="{{ heading|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="section-title">
+                            Physical Skills
+                        </div>
+
+
+                        <div class="col-lg-4 col-md-6">
+
+                            <label class="form-label">
+                                Acceleration
+                            </label>
+
+                            <input
+                                type="number"
+                                name="acceleration"
+                                value="{{ acceleration|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-4 col-md-6">
+
+                            <label class="form-label">
+                                Agility
+                            </label>
+
+                            <input
+                                type="number"
+                                name="agility"
+                                value="{{ agility|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-4 col-md-6">
+
+                            <label class="form-label">
+                                Balance
+                            </label>
+
+                            <input
+                                type="number"
+                                name="balance"
+                                value="{{ balance|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-4 col-md-6">
+
+                            <label class="form-label">
+                                Stamina
+                            </label>
+
+                            <input
+                                type="number"
+                                name="stamina"
+                                value="{{ stamina|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-4 col-md-6">
+
+                            <label class="form-label">
+                                Strength
+                            </label>
+
+                            <input
+                                type="number"
+                                name="strength"
+                                value="{{ strength|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-4 col-md-6">
+
+                            <label class="form-label">
+                                Jumping
+                            </label>
+
+                            <input
+                                type="number"
+                                name="jumping"
+                                value="{{ jumping|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="section-title">
+                            Defensive Skills
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Defending
+                            </label>
+
+                            <input
+                                type="number"
+                                name="defending"
+                                value="{{ defending|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Tackling
+                            </label>
+
+                            <input
+                                type="number"
+                                name="tackling"
+                                value="{{ tackling|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Interceptions
+                            </label>
+
+                            <input
+                                type="number"
+                                name="interceptions"
+                                value="{{ interceptions|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Marking
+                            </label>
+
+                            <input
+                                type="number"
+                                name="marking"
+                                value="{{ marking|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="section-title">
+                            Mental & Tactical Skills
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Vision
+                            </label>
+
+                            <input
+                                type="number"
+                                name="vision"
+                                value="{{ vision|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Decision Making
+                            </label>
+
+                            <input
+                                type="number"
+                                name="decision_making"
+                                value="{{ decision_making|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Positioning
+                            </label>
+
+                            <input
+                                type="number"
+                                name="positioning"
+                                value="{{ positioning|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="form-label">
+                                Composure
+                            </label>
+
+                            <input
+                                type="number"
+                                name="composure"
+                                value="{{ composure|default:'' }}"
+                                class="form-control"
+                                placeholder="0 - 100"
+                                min="0"
+                                max="100">
+
+                        </div>
+
+
+                        <div class="col-12">
+
+                            <div class="search-actions">
+
+                                <button
+                                    type="submit"
+                                    class="search-btn">
+
+                                    Find Matching Players
+                                    <span class="arrow">→</span>
+
+                                </button>
+
+                                <a
+                                    href="{% url 'search_players' %}"
+                                    class="reset-btn">
+
+                                    Reset
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <section>
+
+                <div class="results-header">
+
+                    <div>
+
+                        <h2 class="results-title">
+                            Matching Players
+                        </h2>
+
+                    </div>
+
+                    <div class="results-info">
+                        Highest matches appear first
+                    </div>
+
+                </div>
+
+
+                <div class="row g-4">
+
+                    {% for result in player_results %}
+
+                        <div class="col-xl-4 col-lg-6 col-md-6">
+
+                            <div class="player-card">
+
+                                <div class="match-badge">
+                                    {{ result.match_percentage }}% Match
+                                </div>
+
+
+                                {% if result.player.photo %}
+
+                                    <img
+                                        src="{{ result.player.photo.url }}"
+                                        alt="{{ result.player.name }}"
+                                        class="player-photo">
+
+                                {% else %}
+
+                                    <div class="no-photo">
+                                        No Photo
+                                    </div>
+
+                                {% endif %}
+
+
+                                <div class="player-name">
+                                    {{ result.player.name }}
+                                </div>
+
+
+                                <div class="player-info">
+
+                                    <strong>
+                                        Academy
+                                    </strong>
+
+                                    <span>
+                                        {{ result.player.academy.name }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="player-info">
+
+                                    <strong>
+                                        Age
+                                    </strong>
+
+                                    <span>
+                                        {{ result.player.age }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="player-info">
+
+                                    <strong>
+                                        Position
+                                    </strong>
+
+                                    <span>
+                                        {{ result.player.position }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="player-info">
+
+                                    <strong>
+                                        Preferred Foot
+                                    </strong>
+
+                                    <span>
+                                        {{ result.player.preferred_foot }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="player-info">
+
+                                    <strong>
+                                        Height
+                                    </strong>
+
+                                    <span>
+                                        {{ result.player.height }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="player-info">
+
+                                    <strong>
+                                        Weight
+                                    </strong>
+
+                                    <span>
+                                        {{ result.player.weight }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="skill-section">
+
+                                    <div class="skill-title">
+                                        Existing Skills
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Speed</span>
+                                        <strong>{{ result.player.speed }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.speed }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Shooting</span>
+                                        <strong>{{ result.player.shooting }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.shooting }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Passing</span>
+                                        <strong>{{ result.player.passing }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.passing }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Dribbling</span>
+                                        <strong>{{ result.player.dribbling }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.dribbling }}%;"></span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="skill-section">
+
+                                    <div class="skill-title">
+                                        Technical Skills
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Ball Control</span>
+                                        <strong>{{ result.player.ball_control }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.ball_control }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Crossing</span>
+                                        <strong>{{ result.player.crossing }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.crossing }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Finishing</span>
+                                        <strong>{{ result.player.finishing }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.finishing }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Heading</span>
+                                        <strong>{{ result.player.heading }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.heading }}%;"></span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="skill-section">
+
+                                    <div class="skill-title">
+                                        Physical Skills
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Acceleration</span>
+                                        <strong>{{ result.player.acceleration }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.acceleration }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Agility</span>
+                                        <strong>{{ result.player.agility }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.agility }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Balance</span>
+                                        <strong>{{ result.player.balance }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.balance }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Stamina</span>
+                                        <strong>{{ result.player.stamina }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.stamina }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Strength</span>
+                                        <strong>{{ result.player.strength }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.strength }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Jumping</span>
+                                        <strong>{{ result.player.jumping }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.jumping }}%;"></span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="skill-section">
+
+                                    <div class="skill-title">
+                                        Defensive Skills
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Defending</span>
+                                        <strong>{{ result.player.defending }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.defending }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Tackling</span>
+                                        <strong>{{ result.player.tackling }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.tackling }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Interceptions</span>
+                                        <strong>{{ result.player.interceptions }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.interceptions }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Marking</span>
+                                        <strong>{{ result.player.marking }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.marking }}%;"></span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="skill-section">
+
+                                    <div class="skill-title">
+                                        Mental & Tactical Skills
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Vision</span>
+                                        <strong>{{ result.player.vision }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.vision }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Decision Making</span>
+                                        <strong>{{ result.player.decision_making }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.decision_making }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Positioning</span>
+                                        <strong>{{ result.player.positioning }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.positioning }}%;"></span>
+                                    </div>
+
+
+                                    <div class="skill-row">
+                                        <span>Composure</span>
+                                        <strong>{{ result.player.composure }}</strong>
+                                    </div>
+
+                                    <div class="skill-progress">
+                                        <span style="width: {{ result.player.composure }}%;"></span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="player-actions">
+
+                                    {% if result.player.id in shortlisted_ids %}
+
+                                        <div class="shortlisted-btn">
+                                            ✓ Shortlisted
+                                        </div>
+
+                                    {% else %}
+
+                                        <form
+                                            method="POST"
+                                            action="{% url 'shortlist_player' result.player.id %}">
+
+                                            {% csrf_token %}
+
+                                            <button
+                                                type="submit"
+                                                class="shortlist-btn">
+
+                                                + Shortlist
+
+                                            </button>
+
+                                        </form>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% empty %}
+
+                        <div class="col-12">
+
+                            <div class="empty-box">
+
+                                <h5>
+                                    No Players Found
+                                </h5>
+
+                                <p>
+                                    Enter your scouting requirements above
+                                    and click "Find Matching Players".
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </section>
+
+
+            <footer class="page-footer">
+                Player Scouting System © 2026
+            </footer>
+
+        </div>
+
+    </main>
+
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+</body>
+
+</html>

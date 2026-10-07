@@ -1,0 +1,952 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Academy Dashboard - Player Scouting System</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        :root {
+            --bg: #050505;
+            --surface: #080b0a;
+            --surface-light: #0d110f;
+            --surface-hover: #111713;
+            --green: #35c98b;
+            --green-light: #63e0ad;
+            --green-dark: #123b2e;
+            --text: #ffffff;
+            --muted: #9aa9a3;
+            --muted-light: #c0cbc6;
+            --border: rgba(53, 201, 139, 0.25);
+            --danger: #e74c3c;
+            --danger-light: #ff7568;
+            --radius: 15px;
+            --font: "Teko", sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            letter-spacing: 1px;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 260px;
+            width: 600px;
+            height: 500px;
+            background: radial-gradient(
+                circle,
+                rgba(53, 201, 139, 0.07),
+                transparent 70%
+            );
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: var(--font);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 32px 20px 22px;
+            box-shadow: 10px 0 35px rgba(0, 0, 0, 0.35);
+            z-index: 1000;
+        }
+
+        .brand {
+            padding: 0 10px 28px;
+            border-bottom: 1px solid rgba(53, 201, 139, 0.12);
+        }
+
+        .brand-title {
+            font-size: 27px;
+            font-weight: 600;
+            line-height: 1;
+            letter-spacing: 2px;
+            color: var(--text);
+        }
+
+        .brand-title span {
+            color: var(--green);
+        }
+
+        .brand-subtitle {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav a {
+            position: relative;
+            display: flex;
+            align-items: center;
+            min-height: 48px;
+            padding: 0 15px;
+            border-radius: 10px;
+            color: var(--muted);
+            font-size: 17px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            transition:
+                background 0.3s ease,
+                color 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        .nav a::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            margin-right: 12px;
+            border-radius: 50%;
+            background: rgba(154, 169, 163, 0.45);
+            transition:
+                background 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .nav a:hover {
+            color: var(--green-light);
+            background: var(--surface-light);
+            transform: translateX(3px);
+        }
+
+        .nav a:hover::before {
+            background: var(--green);
+            box-shadow: 0 0 10px rgba(53, 201, 139, 0.7);
+        }
+
+        .nav a.active {
+            color: var(--green);
+            background: var(--surface-light);
+        }
+
+        .nav a.active::before {
+            background: var(--green);
+            box-shadow: 0 0 10px rgba(53, 201, 139, 0.7);
+        }
+
+        .sidebar-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .user-box {
+            padding: 15px;
+            background: var(--surface-light);
+            border: 1px solid rgba(53, 201, 139, 0.15);
+            border-radius: 12px;
+        }
+
+        .user-label {
+            color: var(--muted);
+            font-size: 13px;
+            letter-spacing: 1.5px;
+        }
+
+        .username {
+            margin-top: 2px;
+            color: var(--text);
+            font-size: 19px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .role {
+            margin-top: 2px;
+            color: var(--green);
+            font-size: 14px;
+            letter-spacing: 1.5px;
+        }
+
+        .logout-form {
+            width: 100%;
+        }
+
+        .logout-button {
+            width: 100%;
+            height: 44px;
+            border: 1px solid rgba(231, 76, 60, 0.35);
+            border-radius: 10px;
+            background: rgba(231, 76, 60, 0.08);
+            color: var(--danger-light);
+            font-size: 17px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition:
+                background 0.3s ease,
+                border-color 0.3s ease,
+                color 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background: rgba(231, 76, 60, 0.15);
+            border-color: rgba(231, 76, 60, 0.6);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .main {
+            width: calc(100% - 260px);
+            min-height: 100vh;
+            margin-left: 260px;
+            padding: 45px 35px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1250px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 42px;
+            animation: fadeUp 0.7s ease both;
+        }
+
+        .eyebrow {
+            margin-bottom: 8px;
+            color: var(--green);
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .page-header h1 {
+            color: var(--text);
+            font-size: clamp(42px, 5vw, 68px);
+            font-weight: 600;
+            line-height: 0.95;
+            letter-spacing: 1px;
+        }
+
+        .page-header h1 span {
+            color: var(--green);
+        }
+
+        .page-header p {
+            max-width: 700px;
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 18px;
+            line-height: 1.4;
+            letter-spacing: 0.8px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            animation: fadeUp 0.7s ease both;
+        }
+
+        .section:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--text);
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -6px;
+            width: 42px;
+            height: 2px;
+            background: var(--green);
+        }
+
+        .academy-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            transition:
+                transform 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .academy-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--green);
+        }
+
+        .academy-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(53, 201, 139, 0.45);
+            box-shadow: 0 12px 35px rgba(53, 201, 139, 0.08);
+        }
+
+        .academy-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .info-item {
+            padding: 18px;
+            background: var(--surface-light);
+            border: 1px solid rgba(53, 201, 139, 0.13);
+            border-radius: 10px;
+        }
+
+        .info-label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--muted);
+            font-size: 14px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            display: block;
+            color: var(--text);
+            font-size: 21px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .management-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .management-card {
+            position: relative;
+            min-height: 190px;
+            padding: 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition:
+                transform 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .management-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--green);
+        }
+
+        .management-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(53, 201, 139, 0.5);
+            box-shadow: 0 14px 40px rgba(53, 201, 139, 0.1);
+        }
+
+        .card-title {
+            color: var(--text);
+            font-size: 27px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .card-text {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1.35;
+            letter-spacing: 0.7px;
+        }
+
+        .card-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            min-width: 145px;
+            height: 42px;
+            margin-top: 20px;
+            padding: 0 20px;
+            border: 1px solid rgba(53, 201, 139, 0.35);
+            border-radius: 9px;
+            background: rgba(53, 201, 139, 0.08);
+            color: var(--green-light);
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            transition:
+                background 0.3s ease,
+                border-color 0.3s ease,
+                color 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .card-button:hover {
+            background: var(--green);
+            border-color: var(--green);
+            color: #030604;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(53, 201, 139, 0.18);
+        }
+
+        .card-button .arrow {
+            margin-left: 8px;
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .card-button:hover .arrow {
+            transform: translateX(4px);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            min-width: 120px;
+            height: 38px;
+            margin-top: 20px;
+            padding: 0 17px;
+            border: 1px solid rgba(53, 201, 139, 0.35);
+            border-radius: 9px;
+            background: rgba(53, 201, 139, 0.08);
+            color: var(--green-light);
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            margin-right: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 10px rgba(53, 201, 139, 0.8);
+        }
+
+        footer {
+            margin-top: 55px;
+            padding-top: 22px;
+            border-top: 1px solid rgba(53, 201, 139, 0.12);
+            color: var(--muted);
+            text-align: center;
+            font-size: 15px;
+            letter-spacing: 1.5px;
+        }
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        @media (max-width: 1100px) {
+
+            .sidebar {
+                width: 230px;
+            }
+
+            .main {
+                width: calc(100% - 230px);
+                margin-left: 230px;
+            }
+
+            body::before {
+                left: 230px;
+            }
+
+            .management-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 768px) {
+
+            body::before {
+                left: 0;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                min-height: auto;
+                padding: 22px 18px;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .brand {
+                padding-bottom: 20px;
+            }
+
+            .nav {
+                margin-top: 18px;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 7px;
+            }
+
+            .nav a {
+                min-height: 44px;
+                font-size: 16px;
+            }
+
+            .sidebar-bottom {
+                margin-top: 20px;
+            }
+
+            .main {
+                width: 100%;
+                margin-left: 0;
+                padding: 35px 20px;
+            }
+
+            .page-header {
+                margin-bottom: 32px;
+            }
+
+            .page-header h1 {
+                font-size: 48px;
+            }
+
+            .academy-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .management-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 500px) {
+
+            .brand-title {
+                font-size: 23px;
+            }
+
+            .brand-subtitle {
+                font-size: 13px;
+            }
+
+            .nav {
+                grid-template-columns: 1fr;
+            }
+
+            .main {
+                padding: 30px 15px;
+            }
+
+            .page-header h1 {
+                font-size: 40px;
+            }
+
+            .page-header p {
+                font-size: 16px;
+            }
+
+            .section-title {
+                font-size: 25px;
+            }
+
+            .academy-card {
+                padding: 18px;
+            }
+
+            .management-card {
+                min-height: 175px;
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div>
+
+            <div class="brand">
+
+                <div class="brand-title">
+                    PLAYER <span>SCOUTING</span>
+                </div>
+
+                <div class="brand-subtitle">
+                    Academy Panel
+                </div>
+
+            </div>
+
+            <nav class="nav">
+
+                <a href="{% url 'academy_dashboard' %}" class="active">
+                    Dashboard
+                </a>
+
+                <a href="{% url 'manage_players' %}">
+                    Manage Players
+                </a>
+
+                <a href="{% url 'add_player' %}">
+                    Add Player
+                </a>
+
+                <a href="{% url 'add_unevaluated_player' %}">
+                    Add Unevaluated
+                </a>
+
+                <a href="{% url 'unevaluated_players' %}">
+                    Unevaluated Players
+                </a>
+
+            </nav>
+
+        </div>
+
+        <div class="sidebar-bottom">
+
+            <div class="user-box">
+
+                <div class="user-label">
+                    Logged in as
+                </div>
+
+                <div class="username">
+                    {{ request.user.username }}
+                </div>
+
+                <div class="role">
+                    Academy
+                </div>
+
+            </div>
+
+            <form method="POST" action="{% url 'logout' %}" class="logout-form">
+
+                {% csrf_token %}
+
+                <button type="submit" class="logout-button">
+                    Logout
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <div class="container">
+
+            <header class="page-header">
+
+                <div class="eyebrow">
+                    Academy Panel
+                </div>
+
+                <h1>
+                    Welcome,
+                    <span>{{ academy.name }}</span>
+                </h1>
+
+                <p>
+                    Manage your academy, players and scouting information
+                    from your dashboard.
+                </p>
+
+            </header>
+
+            <section class="section">
+
+                <h2 class="section-title">
+                    Academy Information
+                </h2>
+
+                <div class="academy-card">
+
+                    <div class="academy-grid">
+
+                        <div class="info-item">
+
+                            <span class="info-label">
+                                Academy Name
+                            </span>
+
+                            <span class="info-value">
+                                {{ academy.name }}
+                            </span>
+
+                        </div>
+
+                        <div class="info-item">
+
+                            <span class="info-label">
+                                Location
+                            </span>
+
+                            <span class="info-value">
+                                {{ academy.location }}
+                            </span>
+
+                        </div>
+
+                        <div class="info-item">
+
+                            <span class="info-label">
+                                Username
+                            </span>
+
+                            <span class="info-value">
+                                {{ request.user.username }}
+                            </span>
+
+                        </div>
+
+                        <div class="info-item">
+
+                            <span class="info-label">
+                                Email
+                            </span>
+
+                            <span class="info-value">
+                                {{ request.user.email }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section class="section">
+
+                <h2 class="section-title">
+                    Academy Management
+                </h2>
+
+                <div class="management-grid">
+
+                    <div class="management-card">
+
+                        <div>
+
+                            <div class="card-title">
+                                Manage Players
+                            </div>
+
+                            <div class="card-text">
+                                View, update and manage all evaluated
+                                players registered under your academy.
+                            </div>
+
+                        </div>
+
+                        <a href="{% url 'manage_players' %}" class="card-button">
+                            Manage Players
+                            <span class="arrow">→</span>
+                        </a>
+
+                    </div>
+
+                    <div class="management-card">
+
+                        <div>
+
+                            <div class="card-title">
+                                Add Player
+                            </div>
+
+                            <div class="card-text">
+                                Add a player with complete personal,
+                                physical and scouting information.
+                            </div>
+
+                        </div>
+
+                        <a href="{% url 'add_player' %}" class="card-button">
+                            Add Player
+                            <span class="arrow">→</span>
+                        </a>
+
+                    </div>
+
+                    <div class="management-card">
+
+                        <div>
+
+                            <div class="card-title">
+                                Add Unevaluated
+                            </div>
+
+                            <div class="card-text">
+                                Quickly add a player using only their
+                                name, age and position.
+                            </div>
+
+                        </div>
+
+                        <a href="{% url 'add_unevaluated_player' %}" class="card-button">
+                            Add Player
+                            <span class="arrow">→</span>
+                        </a>
+
+                    </div>
+
+                    <div class="management-card">
+
+                        <div>
+
+                            <div class="card-title">
+                                Unevaluated Players
+                            </div>
+
+                            <div class="card-text">
+                                View players who have basic details
+                                but are waiting for complete evaluation.
+                            </div>
+
+                        </div>
+
+                        <a href="{% url 'unevaluated_players' %}" class="card-button">
+                            View Players
+                            <span class="arrow">→</span>
+                        </a>
+
+                    </div>
+
+                    <div class="management-card">
+
+                        <div>
+
+                            <div class="card-title">
+                                Academy Status
+                            </div>
+
+                            <div class="card-text">
+                                Your academy account has been reviewed
+                                and approved by the administrator.
+                            </div>
+
+                        </div>
+
+                        <div class="status-badge">
+
+                            <span class="status-dot"></span>
+
+                            Approved
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <footer>
+                Player Scouting System © 2026
+            </footer>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

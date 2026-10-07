@@ -1,0 +1,1385 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Scout Dashboard - Player Scouting System</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        :root {
+            --bg: #050505;
+            --surface: #080b0a;
+            --surface-light: #0d110f;
+            --surface-hover: #111713;
+
+            --green: #35c98b;
+            --green-light: #63e0ad;
+            --green-dark: #123b2e;
+
+            --text: #ffffff;
+            --muted: #9aa9a3;
+            --muted-light: #c0cbc6;
+
+            --border: rgba(53, 201, 139, 0.25);
+
+            --danger: #e74c3c;
+            --danger-light: #ff7568;
+
+            --radius: 15px;
+
+            --font: "Teko", sans-serif;
+        }
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            overflow-x: hidden;
+        }
+
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: -250px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(
+                circle,
+                rgba(53, 201, 139, 0.08),
+                transparent 65%
+            );
+            pointer-events: none;
+            animation: glowPulse 5s ease-in-out infinite;
+            z-index: -1;
+        }
+
+
+        a {
+            text-decoration: none;
+        }
+
+
+        button,
+        input,
+        select {
+            font-family: var(--font);
+        }
+
+
+        /* Animations */
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        @keyframes sidebarIn {
+
+            from {
+                opacity: 0;
+                transform: translateX(-25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+        }
+
+
+        @keyframes glowPulse {
+
+            0% {
+                opacity: 0.35;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 0.35;
+            }
+
+        }
+
+
+        @keyframes linePulse {
+
+            0% {
+                opacity: 0.45;
+                transform: scaleX(0.7);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+
+            100% {
+                opacity: 0.45;
+                transform: scaleX(0.7);
+            }
+
+        }
+
+
+        @keyframes dotPulse {
+
+            0% {
+                box-shadow: 0 0 0 rgba(53, 201, 139, 0);
+            }
+
+            50% {
+                box-shadow: 0 0 12px rgba(53, 201, 139, 0.7);
+            }
+
+            100% {
+                box-shadow: 0 0 0 rgba(53, 201, 139, 0);
+            }
+
+        }
+
+
+        /* Sidebar */
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 260px;
+            height: 100vh;
+
+            padding: 32px 20px 22px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            background: var(--surface);
+
+            border-right: 1px solid var(--border);
+
+            box-shadow: 8px 0 35px rgba(0, 0, 0, 0.35);
+
+            animation: sidebarIn 0.7s ease both;
+
+            z-index: 1000;
+        }
+
+
+        /* Brand */
+
+        .brand {
+            padding: 0 10px 30px;
+        }
+
+
+        .brand-title {
+            color: var(--text);
+
+            font-size: 27px;
+            font-weight: 600;
+
+            line-height: 1;
+
+            letter-spacing: 2px;
+        }
+
+
+        .brand-title span {
+            color: var(--green);
+        }
+
+
+        .brand-subtitle {
+            margin-top: 8px;
+
+            color: var(--muted);
+
+            font-size: 14px;
+            font-weight: 400;
+
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+        }
+
+
+        /* Navigation */
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+
+        .nav a {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+
+            min-height: 48px;
+
+            padding: 0 15px;
+
+            color: var(--muted);
+
+            font-size: 17px;
+            font-weight: 500;
+
+            letter-spacing: 1.5px;
+
+            border: 1px solid transparent;
+            border-radius: 9px;
+
+            transition:
+                color 0.3s ease,
+                background 0.3s ease,
+                border-color 0.3s ease,
+                transform 0.3s ease;
+        }
+
+
+        .nav a::before {
+            content: "";
+
+            width: 6px;
+            height: 6px;
+
+            margin-right: 12px;
+
+            border-radius: 50%;
+
+            background: #44534d;
+
+            transition:
+                background 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .nav a:hover {
+            color: var(--green-light);
+
+            background: rgba(53, 201, 139, 0.05);
+
+            border-color: rgba(53, 201, 139, 0.12);
+
+            transform: translateX(3px);
+        }
+
+
+        .nav a:hover::before {
+            background: var(--green);
+            box-shadow: 0 0 9px rgba(53, 201, 139, 0.7);
+        }
+
+
+        .nav a.active {
+            color: var(--green-light);
+
+            background: rgba(53, 201, 139, 0.08);
+
+            border-color: var(--border);
+        }
+
+
+        .nav a.active::before {
+            background: var(--green);
+
+            box-shadow:
+                0 0 6px rgba(53, 201, 139, 0.6);
+
+            animation: dotPulse 2s ease-in-out infinite;
+        }
+
+
+        /* Sidebar bottom */
+
+        .sidebar-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+
+        .user-box {
+            padding: 16px;
+
+            background: var(--surface-light);
+
+            border: 1px solid var(--border);
+
+            border-radius: 12px;
+
+            transition:
+                border-color 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .user-box:hover {
+            border-color: rgba(53, 201, 139, 0.45);
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 25px rgba(53, 201, 139, 0.07);
+        }
+
+
+        .user-label {
+            color: var(--muted);
+
+            font-size: 13px;
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+        }
+
+
+        .username {
+            margin-top: 4px;
+
+            color: var(--text);
+
+            font-size: 20px;
+            font-weight: 500;
+
+            letter-spacing: 1px;
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+
+        .role {
+            margin-top: 2px;
+
+            color: var(--green);
+
+            font-size: 14px;
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+        }
+
+
+        /* Logout */
+
+        .logout-form {
+            width: 100%;
+        }
+
+
+        .logout-button {
+            width: 100%;
+
+            padding: 11px 18px;
+
+            border: 1px solid rgba(231, 76, 60, 0.45);
+
+            border-radius: 8px;
+
+            background: transparent;
+
+            color: var(--danger-light);
+
+            font-family: var(--font);
+
+            font-size: 16px;
+            font-weight: 500;
+
+            letter-spacing: 1.5px;
+
+            cursor: pointer;
+
+            transition:
+                background 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .logout-button:hover {
+            background: var(--danger);
+
+            color: #ffffff;
+
+            border-color: var(--danger);
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 20px rgba(231, 76, 60, 0.18);
+        }
+
+
+        /* Main */
+
+        .main {
+            width: calc(100% - 260px);
+
+            min-height: 100vh;
+
+            margin-left: 260px;
+
+            padding: 45px 35px;
+        }
+
+
+        .container {
+            width: 100%;
+            max-width: 1250px;
+
+            margin: 0 auto;
+        }
+
+
+        /* Header */
+
+        .page-header {
+            margin-bottom: 45px;
+
+            animation: fadeUp 0.7s ease both;
+        }
+
+
+        .eyebrow {
+            margin-bottom: 10px;
+
+            color: var(--green);
+
+            font-size: 15px;
+            font-weight: 500;
+
+            letter-spacing: 3px;
+
+            text-transform: uppercase;
+        }
+
+
+        .page-header h1 {
+            color: var(--text);
+
+            font-size: clamp(42px, 5vw, 65px);
+
+            font-weight: 500;
+
+            line-height: 0.95;
+
+            letter-spacing: 1px;
+        }
+
+
+        .page-header h1 span {
+            color: var(--green);
+        }
+
+
+        .page-header p {
+            max-width: 700px;
+
+            margin-top: 17px;
+
+            color: var(--muted);
+
+            font-size: 19px;
+            font-weight: 400;
+
+            line-height: 1.35;
+
+            letter-spacing: 0.6px;
+        }
+
+
+        /* Sections */
+
+        .section {
+            margin-bottom: 42px;
+
+            animation: fadeUp 0.8s ease both;
+        }
+
+
+        .section:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+
+        .section:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+
+        .section-title {
+            position: relative;
+
+            display: inline-block;
+
+            margin-bottom: 22px;
+
+            color: var(--text);
+
+            font-size: 27px;
+            font-weight: 500;
+
+            letter-spacing: 1.5px;
+        }
+
+
+        .section-title::after {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            bottom: -5px;
+
+            width: 45px;
+            height: 2px;
+
+            background: var(--green);
+
+            transform-origin: left;
+
+            animation: linePulse 2.5s ease-in-out infinite;
+        }
+
+
+        /* Welcome card */
+
+        .welcome-card {
+            position: relative;
+
+            padding: 30px;
+
+            background: var(--surface);
+
+            border: 1px solid var(--border);
+
+            border-radius: var(--radius);
+
+            overflow: hidden;
+
+            box-shadow:
+                0 15px 35px rgba(0, 0, 0, 0.22);
+
+            transition:
+                transform 0.35s ease,
+                border-color 0.35s ease,
+                box-shadow 0.35s ease;
+        }
+
+
+        .welcome-card::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 8%;
+
+            width: 84%;
+            height: 3px;
+
+            background: var(--green);
+
+            transform-origin: center;
+
+            animation: linePulse 3s ease-in-out infinite;
+        }
+
+
+        .welcome-card:hover {
+            transform: translateY(-5px);
+
+            border-color: rgba(53, 201, 139, 0.45);
+
+            box-shadow:
+                0 18px 40px rgba(53, 201, 139, 0.08);
+        }
+
+
+        .welcome-label {
+            color: var(--green);
+
+            font-size: 14px;
+            letter-spacing: 2.5px;
+
+            text-transform: uppercase;
+        }
+
+
+        .welcome-card h2 {
+            margin-top: 8px;
+
+            color: var(--text);
+
+            font-size: 34px;
+            font-weight: 500;
+
+            letter-spacing: 1px;
+        }
+
+
+        .welcome-card h2 span {
+            color: var(--green-light);
+        }
+
+
+        .welcome-card p {
+            max-width: 850px;
+
+            margin-top: 7px;
+
+            color: var(--muted);
+
+            font-size: 18px;
+            line-height: 1.35;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        /* Scouting cards */
+
+        .management-grid {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 20px;
+        }
+
+
+        .management-card {
+            position: relative;
+
+            min-height: 245px;
+
+            padding: 27px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            background: var(--surface);
+
+            border: 1px solid var(--border);
+
+            border-radius: var(--radius);
+
+            overflow: hidden;
+
+            transition:
+                transform 0.35s ease,
+                border-color 0.35s ease,
+                box-shadow 0.35s ease;
+        }
+
+
+        .management-card::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 3px;
+
+            background: var(--green);
+
+            transform-origin: center;
+
+            animation: linePulse 3s ease-in-out infinite;
+        }
+
+
+        .management-card:hover {
+            transform: translateY(-6px);
+
+            border-color: rgba(53, 201, 139, 0.5);
+
+            box-shadow:
+                0 18px 40px rgba(53, 201, 139, 0.08);
+        }
+
+
+        .card-number {
+            color: var(--green);
+
+            font-size: 15px;
+            font-weight: 500;
+
+            letter-spacing: 2px;
+        }
+
+
+        .card-title {
+            margin-top: 12px;
+
+            color: var(--text);
+
+            font-size: 29px;
+            font-weight: 500;
+
+            letter-spacing: 1px;
+        }
+
+
+        .card-text {
+            margin-top: 7px;
+
+            color: var(--muted);
+
+            font-size: 17px;
+
+            line-height: 1.3;
+
+            letter-spacing: 0.4px;
+        }
+
+
+        /* Admin-style buttons */
+
+        .card-button {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 12px;
+
+            width: fit-content;
+
+            margin-top: 25px;
+
+            padding: 12px 22px;
+
+            border: 1px solid var(--green);
+
+            border-radius: 8px;
+
+            background: transparent;
+
+            color: var(--green-light);
+
+            font-family: var(--font);
+
+            font-size: 17px;
+            font-weight: 500;
+
+            letter-spacing: 1.5px;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            transition:
+                background 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .card-button:hover {
+            background: var(--green);
+
+            color: #050505;
+
+            border-color: var(--green);
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 22px rgba(53, 201, 139, 0.25);
+        }
+
+
+        .card-button .arrow {
+            font-size: 20px;
+
+            transition:
+                transform 0.3s ease;
+        }
+
+
+        .card-button:hover .arrow {
+            transform: translateX(4px);
+        }
+
+
+        /* Footer */
+
+        footer {
+            margin-top: 60px;
+            padding-top: 20px;
+
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+
+            color: #65736d;
+
+            font-size: 14px;
+
+            letter-spacing: 1.5px;
+
+            text-align: center;
+
+            animation: fadeUp 1s ease both;
+        }
+
+
+        /* Tablet */
+
+        @media (max-width: 1100px) {
+
+            .sidebar {
+                width: 230px;
+            }
+
+
+            .main {
+                width: calc(100% - 230px);
+
+                margin-left: 230px;
+
+                padding: 40px 28px;
+            }
+
+
+            .management-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+
+        /* Mobile */
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+                position: relative;
+
+                width: 100%;
+                height: auto;
+
+                min-height: auto;
+
+                padding: 25px 20px 20px;
+
+                border-right: none;
+
+                border-bottom: 1px solid var(--border);
+
+                box-shadow:
+                    0 8px 30px rgba(0, 0, 0, 0.3);
+            }
+
+
+            .brand {
+                padding-bottom: 22px;
+            }
+
+
+            .nav {
+                display: grid;
+
+                grid-template-columns: repeat(3, 1fr);
+
+                gap: 7px;
+            }
+
+
+            .nav a {
+                justify-content: center;
+
+                padding: 10px;
+
+                font-size: 15px;
+            }
+
+
+            .nav a::before {
+                display: none;
+            }
+
+
+            .sidebar-bottom {
+                margin-top: 20px;
+            }
+
+
+            .main {
+                width: 100%;
+
+                margin-left: 0;
+
+                padding: 35px 20px;
+            }
+
+
+            .page-header {
+                margin-bottom: 35px;
+            }
+
+
+            .page-header h1 {
+                font-size: 46px;
+            }
+
+
+            .management-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .welcome-card {
+                padding: 25px;
+            }
+
+
+            .management-card {
+                min-height: 220px;
+            }
+
+        }
+
+
+        /* Small mobile */
+
+        @media (max-width: 560px) {
+
+            .sidebar {
+                padding: 22px 15px 18px;
+            }
+
+
+            .brand-title {
+                font-size: 24px;
+            }
+
+
+            .brand-subtitle {
+                font-size: 12px;
+            }
+
+
+            .nav {
+                grid-template-columns: 1fr;
+            }
+
+
+            .nav a {
+                justify-content: flex-start;
+
+                padding-left: 14px;
+            }
+
+
+            .nav a::before {
+                display: block;
+            }
+
+
+            .main {
+                padding: 30px 15px;
+            }
+
+
+            .page-header h1 {
+                font-size: 40px;
+            }
+
+
+            .page-header p {
+                font-size: 17px;
+            }
+
+
+            .section-title {
+                font-size: 24px;
+            }
+
+
+            .welcome-card {
+                padding: 22px;
+            }
+
+
+            .welcome-card h2 {
+                font-size: 29px;
+            }
+
+
+            .management-card {
+                padding: 23px;
+            }
+
+
+            .card-title {
+                font-size: 26px;
+            }
+
+        }
+
+
+        /* Reduced motion */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div>
+
+            <div class="brand">
+
+                <div class="brand-title">
+                    PLAYER <span>SCOUTING</span>
+                </div>
+
+                <div class="brand-subtitle">
+                    Scout Panel
+                </div>
+
+            </div>
+
+
+            <nav class="nav">
+
+                <a
+                    href="{% url 'scout_dashboard' %}"
+                    class="active"
+                >
+                    Dashboard
+                </a>
+
+                <a href="{% url 'academy_lists' %}">
+                    Academies
+                </a>
+
+                <a href="{% url 'search_players' %}">
+                    Search Players
+                </a>
+
+                <a href="{% url 'shortlisted_players' %}">
+                    Shortlisted Players
+                </a>
+
+            </nav>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="user-box">
+
+                <div class="user-label">
+                    Logged in as
+                </div>
+
+                <div class="username">
+                    {{ request.user.username }}
+                </div>
+
+                <div class="role">
+                    Scout
+                </div>
+
+            </div>
+
+
+            <form
+                method="POST"
+                action="{% url 'logout' %}"
+                class="logout-form"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    Logout
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- Main -->
+
+    <main class="main">
+
+        <div class="container">
+
+
+            <!-- Header -->
+
+            <header class="page-header">
+
+                <div class="eyebrow">
+                    Scout Control Center
+                </div>
+
+                <h1>
+                    Welcome,
+                    <span>{{ profile.user.username }}</span>
+                </h1>
+
+                <p>
+                    Discover academies, search talented players and manage
+                    your shortlisted players from your scouting dashboard.
+                </p>
+
+            </header>
+
+
+            <!-- Welcome -->
+
+            <section class="section">
+
+                <div class="welcome-card">
+
+                    <div class="welcome-label">
+                        Scout Panel
+                    </div>
+
+                    <h2>
+                        Start Your
+                        <span>Scouting Journey</span>
+                    </h2>
+
+                    <p>
+                        Explore registered academies, review player profiles,
+                        compare scouting information and build your shortlist
+                        of promising players.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- Scouting Tools -->
+
+            <section class="section">
+
+                <h2 class="section-title">
+                    Scouting Tools
+                </h2>
+
+
+                <div class="management-grid">
+
+
+                    <!-- Academies -->
+
+                    <div class="management-card">
+
+                        <div>
+
+                            <div class="card-number">
+                                01
+                            </div>
+
+                            <div class="card-title">
+                                Academies
+                            </div>
+
+                            <div class="card-text">
+                                Browse approved academies and explore
+                                the players registered under each academy.
+                            </div>
+
+                        </div>
+
+
+                        <a
+                            href="{% url 'academy_lists' %}"
+                            class="card-button"
+                        >
+                            View Academies
+
+                            <span class="arrow">
+                                →
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- Search Players -->
+
+                    <div class="management-card">
+
+                        <div>
+
+                            <div class="card-number">
+                                02
+                            </div>
+
+                            <div class="card-title">
+                                Search Players
+                            </div>
+
+                            <div class="card-text">
+                                Search and discover players using their
+                                position, skills and scouting information.
+                            </div>
+
+                        </div>
+
+
+                        <a
+                            href="{% url 'search_players' %}"
+                            class="card-button"
+                        >
+                            Search Players
+
+                            <span class="arrow">
+                                →
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- Shortlisted Players -->
+
+                    <div class="management-card">
+
+                        <div>
+
+                            <div class="card-number">
+                                03
+                            </div>
+
+                            <div class="card-title">
+                                Shortlisted Players
+                            </div>
+
+                            <div class="card-text">
+                                View and manage the players you have
+                                shortlisted during your scouting process.
+                            </div>
+
+                        </div>
+
+
+                        <a
+                            href="{% url 'shortlisted_players' %}"
+                            class="card-button"
+                        >
+                            View Shortlist
+
+                            <span class="arrow">
+                                →
+                            </span>
+
+                        </a>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- Footer -->
+
+            <footer>
+                Player Scouting System © 2026
+            </footer>
+
+
+        </div>
+
+    </main>
+
+
+</body>
+
+</html>

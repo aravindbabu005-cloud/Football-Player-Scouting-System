@@ -1,0 +1,2269 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Academy Players - Player Scouting System</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #050807;
+            --surface: #09110e;
+            --surface-light: #0d1814;
+            --green: #35c98b;
+            --green-light: #63e0ad;
+            --green-dark: #123b2e;
+            --border: #123b2e;
+            --text: #ffffff;
+            --muted: #8f9d97;
+            --muted-light: #b5c0bb;
+            --radius: 15px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(18, 59, 46, 0.45),
+                    transparent 38%
+                ),
+                radial-gradient(
+                    circle at 50% 100%,
+                    rgba(53, 201, 139, 0.08),
+                    transparent 35%
+                ),
+                var(--bg);
+
+            color: var(--text);
+
+            font-family: "Inter", sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Navbar */
+
+        .navbar {
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1000;
+
+            min-height: 76px;
+
+            display: flex;
+
+            align-items: center;
+
+            padding: 0 58px;
+
+            background: rgba(3, 3, 3, 0.94);
+
+            border-bottom: 1px solid var(--green);
+
+            backdrop-filter: blur(14px);
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border: 1px solid var(--green);
+
+            color: var(--green);
+
+            font-family: "Space Grotesk", sans-serif;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            box-shadow:
+                0 0 18px rgba(53, 201, 139, 0.12);
+        }
+
+        .nav-links {
+            display: flex;
+
+            align-items: center;
+
+            gap: 38px;
+
+            margin-left: 55px;
+        }
+
+        .nav-links a,
+        .nav-right a {
+            position: relative;
+
+            color: #ffffff;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            letter-spacing: 1.5px;
+
+            transition: color 0.25s ease;
+        }
+
+        .nav-links a::after {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+
+            bottom: -8px;
+
+            width: 0;
+
+            height: 2px;
+
+            background: var(--green);
+
+            transition: width 0.25s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-right a:hover {
+            color: var(--green);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-right {
+            margin-left: auto;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 16px;
+        }
+
+        .divider {
+            color: #414b47;
+        }
+
+        /* Main */
+
+        .container {
+            width: min(94%, 1450px);
+
+            margin: 55px auto 70px;
+        }
+
+        /* Heading */
+
+        .heading-section {
+            position: relative;
+
+            padding: 8px 0 8px 22px;
+
+            margin-bottom: 38px;
+
+            border-left: 3px solid var(--green);
+        }
+
+        .heading-section h1 {
+            font-family: "Space Grotesk", sans-serif;
+
+            font-size: clamp(29px, 4vw, 42px);
+
+            line-height: 1.1;
+
+            margin-bottom: 10px;
+
+            letter-spacing: -1px;
+        }
+
+        .heading-section p {
+            color: var(--muted);
+
+            font-size: 14px;
+
+            line-height: 1.7;
+        }
+
+        /* Academy Information */
+
+        .academy-info {
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(18, 59, 46, 0.45),
+                    rgba(5, 13, 10, 0.94)
+                );
+
+            border: 1px solid var(--border);
+
+            border-radius: var(--radius);
+
+            padding: 22px 25px;
+
+            margin-bottom: 42px;
+
+            box-shadow:
+                0 15px 40px rgba(0, 0, 0, 0.3);
+
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .academy-info-header {
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+            padding-bottom: 17px;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .academy-info-header h2 {
+            font-family: "Space Grotesk", sans-serif;
+
+            font-size: 20px;
+        }
+
+        .approved-badge {
+            padding: 5px 10px;
+
+            border: 1px solid #176b4b;
+
+            border-radius: 5px;
+
+            color: var(--green);
+
+            background: rgba(53, 201, 139, 0.05);
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.3px;
+        }
+
+        .academy-details {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 22px;
+
+            padding-top: 18px;
+        }
+
+        .detail-item {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 6px;
+        }
+
+        .detail-label {
+            color: var(--green);
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.4px;
+        }
+
+        .detail-value {
+            color: var(--muted-light);
+
+            font-size: 13px;
+        }
+
+        /* Players Header */
+
+        .players-header {
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            margin-bottom: 22px;
+        }
+
+        .players-header h2 {
+            font-family: "Space Grotesk", sans-serif;
+
+            font-size: 25px;
+        }
+
+        .player-count {
+            padding: 5px 10px;
+
+            border: 1px solid #176b4b;
+
+            border-radius: 5px;
+
+            color: var(--green);
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+        }
+
+        /* Player Grid */
+
+        .players-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 22px;
+        }
+
+        /* Player Card */
+
+        .player-card {
+            position: relative;
+
+            min-width: 0;
+
+            overflow: hidden;
+
+            border: 1px solid #176b4b;
+
+            border-radius: 15px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #123b2e 0%,
+                    #0a2119 30%,
+                    #06100c 65%,
+                    #020403 100%
+                );
+
+            box-shadow:
+                0 12px 30px rgba(0, 0, 0, 0.45);
+
+            transition:
+                transform 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+
+            animation: cardAppear 0.6s ease both;
+        }
+
+        .player-card:nth-child(2) {
+            animation-delay: 0.06s;
+        }
+
+        .player-card:nth-child(3) {
+            animation-delay: 0.12s;
+        }
+
+        .player-card:nth-child(4) {
+            animation-delay: 0.18s;
+        }
+
+        .player-card:hover {
+            transform: translateY(-7px);
+
+            border-color: var(--green);
+
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.60),
+                0 0 25px rgba(53, 201, 139, 0.16);
+        }
+
+        /* Player Image */
+
+        .player-image-area {
+            position: relative;
+
+            width: 100%;
+
+            height: 190px;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #1b5944,
+                    #06110d 70%,
+                    #020403
+                );
+        }
+
+        .player-image-area::after {
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    to bottom,
+                    transparent 50%,
+                    rgba(2, 5, 4, 0.65) 100%
+                );
+
+            pointer-events: none;
+        }
+
+        .player-image {
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+            object-position: center top;
+
+            display: block;
+
+            filter:
+                saturate(0.92)
+                contrast(1.05);
+
+            transition:
+                transform 0.45s ease;
+        }
+
+        .player-card:hover .player-image {
+            transform: scale(1.045);
+        }
+
+        .no-image {
+            width: 100%;
+
+            height: 100%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: var(--green-light);
+
+            font-family: "Space Grotesk", sans-serif;
+
+            font-size: 75px;
+
+            font-weight: 700;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #1b5944,
+                    #06110d 65%,
+                    #020403
+                );
+        }
+
+        /* Rating */
+
+        .overall-rating {
+            position: absolute;
+
+            top: 15px;
+
+            left: 15px;
+
+            z-index: 6;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+        }
+
+        .overall-number {
+            color: #ffffff;
+
+            font-family: "Space Grotesk", sans-serif;
+
+            font-size: 36px;
+
+            font-weight: 700;
+
+            line-height: 0.9;
+
+            text-shadow:
+                0 3px 12px rgba(0, 0, 0, 0.85);
+        }
+
+        .overall-label {
+            margin-top: 4px;
+
+            color: var(--green-light);
+
+            font-size: 8px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.4px;
+        }
+
+        /* Position */
+
+        .position-badge {
+            position: absolute;
+
+            top: 15px;
+
+            right: 15px;
+
+            z-index: 6;
+
+            padding: 6px 9px;
+
+            border: 1px solid var(--green);
+
+            border-radius: 5px;
+
+            background: rgba(2, 5, 4, 0.82);
+
+            color: var(--green-light);
+
+            font-size: 8px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+            backdrop-filter: blur(8px);
+        }
+
+        /* Card Content */
+
+        .card-content {
+            padding: 15px 16px 17px;
+        }
+
+        .player-name {
+            max-width: 100%;
+
+            margin-bottom: 8px;
+
+            color: #ffffff;
+
+            font-family: "Space Grotesk", sans-serif;
+
+            font-size: 19px;
+
+            font-weight: 700;
+
+            line-height: 1.1;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.2px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+        /* Basic Player Information */
+
+        .player-basic-info {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 5px;
+
+            margin-bottom: 14px;
+
+            padding: 8px;
+
+            background: rgba(255, 255, 255, 0.025);
+
+            border: 1px solid rgba(53, 201, 139, 0.10);
+
+            border-radius: 8px;
+        }
+
+        .basic-item {
+            text-align: center;
+        }
+
+        .basic-label {
+            display: block;
+
+            color: #68766f;
+
+            font-size: 7px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.7px;
+
+            margin-bottom: 3px;
+        }
+
+        .basic-value {
+            display: block;
+
+            color: #d8e2dd;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+        /* Matrix Section */
+
+        .matrix-section {
+            margin-top: 10px;
+        }
+
+        .matrix-title {
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-bottom: 8px;
+
+            color: var(--green);
+
+            font-size: 8px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.2px;
+
+            text-transform: uppercase;
+        }
+
+        .matrix-title::before {
+            content: "";
+
+            width: 15px;
+
+            height: 1px;
+
+            background: var(--green);
+        }
+
+        /* Attribute Matrix */
+
+        .attributes {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 6px 10px;
+        }
+
+        .attribute {
+            min-width: 0;
+
+            display: grid;
+
+            grid-template-columns:
+                43px 1fr 19px;
+
+            align-items: center;
+
+            gap: 4px;
+        }
+
+        .attribute-name {
+            color: #899790;
+
+            font-size: 7px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.3px;
+
+            text-transform: uppercase;
+        }
+
+        .attribute-bar {
+            height: 3px;
+
+            overflow: hidden;
+
+            background: #17241f;
+
+            border-radius: 10px;
+        }
+
+        .attribute-fill {
+            height: 100%;
+
+            width: 0;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #35c98b,
+                    #63e0ad
+                );
+
+            border-radius: 10px;
+
+            box-shadow:
+                0 0 6px rgba(53, 201, 139, 0.4);
+
+            transition:
+                width 0.8s ease;
+        }
+
+        .attribute-value {
+            color: #ffffff;
+
+            font-size: 7px;
+
+            font-weight: 800;
+
+            text-align: right;
+        }
+
+        /* Academy */
+
+        .card-footer {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin-top: 13px;
+
+            padding-top: 10px;
+
+            border-top: 1px solid rgba(18, 59, 46, 0.8);
+        }
+
+        .academy-label {
+            color: #68766f;
+
+            font-size: 7px;
+
+            font-weight: 700;
+
+            letter-spacing: 0.9px;
+
+            text-transform: uppercase;
+        }
+
+        .academy-name {
+            max-width: 60%;
+
+            color: #c4cec9;
+
+            font-size: 7px;
+
+            font-weight: 700;
+
+            text-align: right;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+        /* No Players */
+
+        .no-players {
+            padding: 70px 30px;
+
+            text-align: center;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(18, 59, 46, 0.35),
+                    rgba(5, 13, 10, 0.95)
+                );
+
+            border: 1px solid var(--border);
+
+            border-radius: var(--radius);
+
+            color: var(--muted);
+
+            font-size: 14px;
+        }
+
+        /* Back */
+
+        .bottom-section {
+            margin-top: 35px;
+        }
+
+        .back-button {
+            display: inline-flex;
+
+            align-items: center;
+
+            padding: 11px 17px;
+
+            border: 1px solid #28332f;
+
+            border-radius: 7px;
+
+            color: #aeb8b4;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.3px;
+
+            transition:
+                color 0.25s ease,
+                border-color 0.25s ease,
+                background 0.25s ease,
+                transform 0.25s ease;
+        }
+
+        .back-button:hover {
+            color: var(--green);
+
+            border-color: var(--green);
+
+            background: rgba(53, 201, 139, 0.05);
+
+            transform: translateX(-3px);
+        }
+
+        /* Animations */
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+
+                transform: translateY(0);
+            }
+
+        }
+
+        @keyframes cardAppear {
+
+            from {
+                opacity: 0;
+
+                transform:
+                    translateY(20px)
+                    scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+
+        }
+
+        /* Large Tablet */
+
+        @media (max-width: 1250px) {
+
+            .players-grid {
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+            }
+
+        }
+
+        /* Tablet */
+
+        @media (max-width: 950px) {
+
+            .navbar {
+                padding: 0 28px;
+            }
+
+            .nav-links {
+                gap: 22px;
+
+                margin-left: 30px;
+            }
+
+            .nav-links a,
+            .nav-right a {
+                font-size: 10px;
+            }
+
+            .container {
+                margin-top: 45px;
+            }
+
+            .players-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .academy-details {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+        /* Mobile */
+
+        @media (max-width: 650px) {
+
+            .navbar {
+                min-height: 70px;
+
+                padding: 13px 18px;
+
+                flex-wrap: wrap;
+
+                gap: 14px;
+            }
+
+            .logo {
+                width: 42px;
+
+                height: 42px;
+            }
+
+            .nav-links {
+                order: 3;
+
+                width: 100%;
+
+                margin-left: 0;
+
+                justify-content: space-between;
+
+                gap: 8px;
+            }
+
+            .nav-links a,
+            .nav-right a {
+                font-size: 8px;
+
+                letter-spacing: 1px;
+            }
+
+            .nav-right {
+                gap: 8px;
+            }
+
+            .container {
+                width: 92%;
+
+                margin-top: 35px;
+            }
+
+            .heading-section {
+                padding-left: 16px;
+
+                margin-bottom: 30px;
+            }
+
+            .heading-section h1 {
+                font-size: 30px;
+            }
+
+            .heading-section p {
+                font-size: 13px;
+            }
+
+            .academy-info {
+                padding: 20px;
+
+                margin-bottom: 35px;
+            }
+
+            .academy-info-header {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .academy-details {
+                grid-template-columns: 1fr;
+
+                gap: 17px;
+            }
+
+            .players-header {
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 9px;
+            }
+
+            .players-grid {
+                grid-template-columns: 1fr;
+
+                gap: 20px;
+            }
+
+            .player-card {
+                width: min(100%, 340px);
+
+                margin: 0 auto;
+            }
+
+            .player-image-area {
+                height: 175px;
+            }
+
+        }
+
+        /* Small Mobile */
+
+        @media (max-width: 400px) {
+
+            .player-card {
+                width: min(100%, 325px);
+            }
+
+            .player-image-area {
+                height: 160px;
+            }
+
+            .card-content {
+                padding: 14px;
+            }
+
+            .overall-number {
+                font-size: 33px;
+            }
+
+            .position-badge {
+                right: 14px;
+
+                top: 14px;
+            }
+
+            .overall-rating {
+                left: 14px;
+
+                top: 14px;
+            }
+
+            .player-name {
+                font-size: 18px;
+            }
+
+            .attributes {
+                gap: 6px 8px;
+            }
+
+            .attribute {
+                grid-template-columns:
+                    40px 1fr 18px;
+            }
+
+        }
+
+        /* Reduced Motion */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+
+                animation-iteration-count: 1 !important;
+
+                transition-duration: 0.01ms !important;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            PS
+        </div>
+
+        <div class="nav-links">
+
+            <a href="{% url 'admin_dashboard' %}">
+                DASHBOARD
+            </a>
+
+            <a href="{% url 'pending_users' %}">
+                PENDING
+            </a>
+
+            <a href="{% url 'view_scouts' %}">
+                SCOUTS
+            </a>
+
+            <a href="{% url 'view_academies' %}">
+                ACADEMIES
+            </a>
+
+        </div>
+
+        <div class="nav-right">
+
+            <a href="{% url 'admin_dashboard' %}">
+                ADMIN
+            </a>
+
+        
+
+            
+        </div>
+
+    </nav>
+
+
+    <!-- Main -->
+
+    <main class="container">
+
+
+        <!-- Heading -->
+
+        <section class="heading-section">
+
+            <h1>
+                Academy Players
+            </h1>
+
+            <p>
+                Player cards registered under this academy
+            </p>
+
+        </section>
+
+
+        <!-- Academy Information -->
+
+        <section class="academy-info">
+
+            <div class="academy-info-header">
+
+                <h2>
+                    {{ academy.name }}
+                </h2>
+
+                <span class="approved-badge">
+                    APPROVED
+                </span>
+
+            </div>
+
+
+            <div class="academy-details">
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        ACADEMY NAME
+                    </span>
+
+                    <span class="detail-value">
+                        {{ academy.name }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        LOCATION
+                    </span>
+
+                    <span class="detail-value">
+
+                        {% if academy.location %}
+
+                            {{ academy.location }}
+
+                        {% else %}
+
+                            Not Provided
+
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        STATUS
+                    </span>
+
+                    <span class="detail-value">
+                        Approved
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Players -->
+
+        <section>
+
+            <div class="players-header">
+
+                <h2>
+                    Players
+                </h2>
+
+                <span class="player-count">
+
+                    {{ players|length }}
+
+                    PLAYER{{ players|length|pluralize }}
+
+                </span>
+
+            </div>
+
+
+            {% if players %}
+
+            <div class="players-grid">
+
+
+                {% for player in players %}
+
+                <!-- Player Card -->
+
+                <div
+                    class="player-card"
+
+                    data-speed="{{ player.speed|default:'0' }}"
+
+                    data-shooting="{{ player.shooting|default:'0' }}"
+
+                    data-passing="{{ player.passing|default:'0' }}"
+
+                    data-dribbling="{{ player.dribbling|default:'0' }}"
+
+                    data-ball-control="{{ player.ball_control|default:'0' }}"
+
+                    data-crossing="{{ player.crossing|default:'0' }}"
+
+                    data-finishing="{{ player.finishing|default:'0' }}"
+
+                    data-heading="{{ player.heading|default:'0' }}"
+
+                    data-acceleration="{{ player.acceleration|default:'0' }}"
+
+                    data-agility="{{ player.agility|default:'0' }}"
+
+                    data-balance="{{ player.balance|default:'0' }}"
+
+                    data-stamina="{{ player.stamina|default:'0' }}"
+
+                    data-strength="{{ player.strength|default:'0' }}"
+
+                    data-jumping="{{ player.jumping|default:'0' }}"
+
+                    data-defending="{{ player.defending|default:'0' }}"
+
+                    data-tackling="{{ player.tackling|default:'0' }}"
+
+                    data-interceptions="{{ player.interceptions|default:'0' }}"
+
+                    data-marking="{{ player.marking|default:'0' }}"
+
+                    data-vision="{{ player.vision|default:'0' }}"
+
+                    data-decision-making="{{ player.decision_making|default:'0' }}"
+
+                    data-positioning="{{ player.positioning|default:'0' }}"
+
+                    data-composure="{{ player.composure|default:'0' }}"
+                >
+
+
+                    <!-- Player Image -->
+
+                    <div class="player-image-area">
+
+                        {% if player.photo %}
+
+                        <img
+                            src="{{ player.photo.url }}"
+                            alt="{{ player.name }}"
+                            class="player-image"
+                        >
+
+                        {% else %}
+
+                        <div class="no-image">
+                            {{ player.name|first|upper }}
+                        </div>
+
+                        {% endif %}
+
+
+                        <!-- Overall Rating -->
+
+                        <div class="overall-rating">
+
+                            <span class="overall-number">
+                                0
+                            </span>
+
+                            <span class="overall-label">
+                                OVR
+                            </span>
+
+                        </div>
+
+
+                        <!-- Position -->
+
+                        <div class="position-badge">
+
+                            {{ player.position|upper }}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Card Content -->
+
+                    <div class="card-content">
+
+
+                        <!-- Name -->
+
+                        <div class="player-name">
+
+                            {{ player.name }}
+
+                        </div>
+
+
+                        <!-- Basic Information -->
+
+                        <div class="player-basic-info">
+
+                            <div class="basic-item">
+
+                                <span class="basic-label">
+                                    AGE
+                                </span>
+
+                                <span class="basic-value">
+                                    {{ player.age }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="basic-item">
+
+                                <span class="basic-label">
+                                    HEIGHT
+                                </span>
+
+                                <span class="basic-value">
+                                    {{ player.height }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="basic-item">
+
+                                <span class="basic-label">
+                                    WEIGHT
+                                </span>
+
+                                <span class="basic-value">
+                                    {{ player.weight }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="basic-item">
+
+                                <span class="basic-label">
+                                    FOOT
+                                </span>
+
+                                <span class="basic-value">
+                                    {{ player.preferred_foot }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Technical -->
+
+                        <div class="matrix-section">
+
+                            <div class="matrix-title">
+                                Technical
+                            </div>
+
+                            <div class="attributes">
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        PAC
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="speed"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.speed|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        SHO
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="shooting"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.shooting|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        PAS
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="passing"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.passing|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        DRI
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="dribbling"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.dribbling|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        CTRL
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="ball_control"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.ball_control|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        CROSS
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="crossing"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.crossing|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        FIN
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="finishing"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.finishing|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        HEAD
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="heading"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.heading|default:"0" }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Physical -->
+
+                        <div class="matrix-section">
+
+                            <div class="matrix-title">
+                                Physical
+                            </div>
+
+                            <div class="attributes">
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        ACC
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="acceleration"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.acceleration|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        AGI
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="agility"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.agility|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        BAL
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="balance"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.balance|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        STA
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="stamina"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.stamina|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        STR
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="strength"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.strength|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        JMP
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="jumping"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.jumping|default:"0" }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Defensive -->
+
+                        <div class="matrix-section">
+
+                            <div class="matrix-title">
+                                Defensive
+                            </div>
+
+                            <div class="attributes">
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        DEF
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="defending"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.defending|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        TKL
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="tackling"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.tackling|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        INT
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="interceptions"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.interceptions|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        MRK
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="marking"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.marking|default:"0" }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Mental -->
+
+                        <div class="matrix-section">
+
+                            <div class="matrix-title">
+                                Mental / Tactical
+                            </div>
+
+                            <div class="attributes">
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        VIS
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="vision"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.vision|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        DEC
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="decision_making"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.decision_making|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        POS
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="positioning"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.positioning|default:"0" }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="attribute">
+
+                                    <span class="attribute-name">
+                                        COM
+                                    </span>
+
+                                    <div class="attribute-bar">
+
+                                        <div
+                                            class="attribute-fill"
+                                            data-skill="composure"
+                                        ></div>
+
+                                    </div>
+
+                                    <span class="attribute-value">
+                                        {{ player.composure|default:"0" }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Academy -->
+
+                        <div class="card-footer">
+
+                            <span class="academy-label">
+                                ACADEMY
+                            </span>
+
+                            <span class="academy-name">
+                                {{ academy.name }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <div class="no-players">
+                No players have been added to this academy yet.
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- Back -->
+
+        <div class="bottom-section">
+
+            <a
+                href="{% url 'view_academies' %}"
+                class="back-button"
+            >
+                ← BACK TO ACADEMIES
+            </a>
+
+        </div>
+
+    </main>
+
+
+    <!-- Player Card Script -->
+
+    <script>
+
+        const playerCards =
+            document.querySelectorAll(".player-card");
+
+        const skillNames = [
+            "speed",
+            "shooting",
+            "passing",
+            "dribbling",
+            "ball_control",
+            "crossing",
+            "finishing",
+            "heading",
+            "acceleration",
+            "agility",
+            "balance",
+            "stamina",
+            "strength",
+            "jumping",
+            "defending",
+            "tackling",
+            "interceptions",
+            "marking",
+            "vision",
+            "decision_making",
+            "positioning",
+            "composure"
+        ];
+
+        playerCards.forEach(function(card) {
+
+            let total = 0;
+
+            let count = 0;
+
+            skillNames.forEach(function(skill) {
+
+                const value =
+                    Number(
+                        card.dataset[
+                            skill.replace("_", "-")
+                        ]
+                    ) || 0;
+
+                total += value;
+
+                count++;
+
+            });
+
+            const overall =
+                count > 0
+                    ? Math.round(total / count)
+                    : 0;
+
+            const overallNumber =
+                card.querySelector(".overall-number");
+
+            overallNumber.textContent =
+                overall;
+
+
+            const skillBars =
+                card.querySelectorAll(".attribute-fill");
+
+
+            skillBars.forEach(function(bar) {
+
+                const skillName =
+                    bar.dataset.skill;
+
+                let value = 0;
+
+
+                if (skillName === "speed") {
+                    value = Number(card.dataset.speed) || 0;
+                }
+
+                if (skillName === "shooting") {
+                    value = Number(card.dataset.shooting) || 0;
+                }
+
+                if (skillName === "passing") {
+                    value = Number(card.dataset.passing) || 0;
+                }
+
+                if (skillName === "dribbling") {
+                    value = Number(card.dataset.dribbling) || 0;
+                }
+
+                if (skillName === "ball_control") {
+                    value = Number(card.dataset.ballControl) || 0;
+                }
+
+                if (skillName === "crossing") {
+                    value = Number(card.dataset.crossing) || 0;
+                }
+
+                if (skillName === "finishing") {
+                    value = Number(card.dataset.finishing) || 0;
+                }
+
+                if (skillName === "heading") {
+                    value = Number(card.dataset.heading) || 0;
+                }
+
+                if (skillName === "acceleration") {
+                    value = Number(card.dataset.acceleration) || 0;
+                }
+
+                if (skillName === "agility") {
+                    value = Number(card.dataset.agility) || 0;
+                }
+
+                if (skillName === "balance") {
+                    value = Number(card.dataset.balance) || 0;
+                }
+
+                if (skillName === "stamina") {
+                    value = Number(card.dataset.stamina) || 0;
+                }
+
+                if (skillName === "strength") {
+                    value = Number(card.dataset.strength) || 0;
+                }
+
+                if (skillName === "jumping") {
+                    value = Number(card.dataset.jumping) || 0;
+                }
+
+                if (skillName === "defending") {
+                    value = Number(card.dataset.defending) || 0;
+                }
+
+                if (skillName === "tackling") {
+                    value = Number(card.dataset.tackling) || 0;
+                }
+
+                if (skillName === "interceptions") {
+                    value = Number(card.dataset.interceptions) || 0;
+                }
+
+                if (skillName === "marking") {
+                    value = Number(card.dataset.marking) || 0;
+                }
+
+                if (skillName === "vision") {
+                    value = Number(card.dataset.vision) || 0;
+                }
+
+                if (skillName === "decision_making") {
+                    value = Number(card.dataset.decisionMaking) || 0;
+                }
+
+                if (skillName === "positioning") {
+                    value = Number(card.dataset.positioning) || 0;
+                }
+
+                if (skillName === "composure") {
+                    value = Number(card.dataset.composure) || 0;
+                }
+
+
+                setTimeout(function() {
+
+                    bar.style.width =
+                        Math.min(value, 100) + "%";
+
+                }, 150);
+
+            });
+
+        });
+
+    </script>
+
+</body>
+
+</html>

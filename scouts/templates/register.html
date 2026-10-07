@@ -1,0 +1,1347 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Choose Registration | Player Scouting System</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        :root {
+            --green: #35c98b;
+            --green-dark: #123b2e;
+            --green-light: #63e0ad;
+
+            --black: #010101;
+            --dark: #050908;
+
+            --text-main: #ffffff;
+            --text-light: rgba(255, 255, 255, 0.72);
+            --text-muted: rgba(255, 255, 255, 0.48);
+
+            --font-main: "Teko", sans-serif;
+
+            --font-navbar: 16px;
+            --font-main-size: 18px;
+            --font-small: 15px;
+
+            --radius-small: 7px;
+            --radius-card: 18px;
+        }
+
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        html {
+            width: 100%;
+            min-height: 100%;
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+
+            background: var(--black);
+            color: var(--text-main);
+
+            font-family: var(--font-main);
+            font-size: var(--font-main-size);
+
+            overflow-x: hidden;
+
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        a,
+        span,
+        div {
+            font-family: var(--font-main);
+        }
+
+
+        a {
+            text-decoration: none;
+        }
+
+
+        /* Navbar */
+
+        .navbar {
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 78px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    rgba(0, 0, 0, 0.94),
+                    rgba(0, 0, 0, 0.97)
+                ),
+                url("{% static 'img/jose.jpg' %}");
+
+            background-size: cover;
+            background-position: center;
+
+            border-bottom: 1px solid rgba(53, 201, 139, 0.22);
+
+            z-index: 9999;
+
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+
+            animation: navbarDrop 0.7s ease both;
+        }
+
+
+        .navbar::after {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            height: 1px;
+
+            background: var(--green);
+
+            opacity: 0.55;
+
+            box-shadow:
+                0 0 10px rgba(53, 201, 139, 0.35);
+        }
+
+
+        .navbar-container {
+            width: 100%;
+            max-width: 1500px;
+            height: 100%;
+
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 53px;
+        }
+
+
+        /* Navigation */
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 48px;
+
+            height: 100%;
+        }
+
+
+        .nav-links a {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            height: 100%;
+
+            color: rgba(255, 255, 255, 0.82);
+
+            text-decoration: none;
+
+            font-family: var(--font-main);
+            font-size: var(--font-navbar);
+            font-weight: 600;
+
+            letter-spacing: 2.5px;
+
+            transition:
+                color 0.3s ease,
+                transform 0.3s ease;
+        }
+
+
+        .nav-links a::after {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            bottom: 17px;
+
+            width: 0;
+            height: 2px;
+
+            background: var(--green);
+
+            box-shadow:
+                0 0 8px rgba(53, 201, 139, 0.50);
+
+            transition: width 0.3s ease;
+        }
+
+
+        .nav-links a:hover {
+            color: var(--green);
+
+            transform: translateY(-2px);
+        }
+
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+
+        .nav-links a.active {
+            color: var(--green);
+
+            text-shadow:
+                0 0 12px rgba(53, 201, 139, 0.25);
+        }
+
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+
+        /* Main */
+
+        .main-container {
+            position: relative;
+
+            width: 100%;
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 125px 45px 70px;
+
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    #123b2e 0%,
+                    #0b211c 18%,
+                    #07110f 40%,
+                    #030605 70%,
+                    #010101 100%
+                );
+
+            overflow: hidden;
+        }
+
+
+        .main-container::before {
+            content: "";
+
+            position: absolute;
+
+            width: 700px;
+            height: 700px;
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+
+            border-radius: 50%;
+
+            background: var(--green);
+
+            opacity: 0.035;
+
+            filter: blur(130px);
+
+            pointer-events: none;
+
+            animation: backgroundPulse 7s ease-in-out infinite;
+        }
+
+
+        .main-container::after {
+            content: "";
+
+            position: absolute;
+
+            width: 350px;
+            height: 350px;
+
+            right: -120px;
+            top: 15%;
+
+            border-radius: 50%;
+
+            background: var(--green);
+
+            opacity: 0.025;
+
+            filter: blur(100px);
+
+            pointer-events: none;
+
+            animation: sideGlow 8s ease-in-out infinite;
+        }
+
+
+        .selection-wrapper {
+            position: relative;
+
+            z-index: 2;
+
+            width: 100%;
+            max-width: 1100px;
+
+            margin: 0 auto;
+
+            text-align: center;
+        }
+
+
+        /* Heading */
+
+        .small-heading {
+            margin-bottom: 12px;
+
+            color: var(--green);
+
+            font-family: var(--font-main);
+            font-size: 17px;
+            font-weight: 600;
+
+            text-transform: uppercase;
+            letter-spacing: 3px;
+
+            text-shadow:
+                0 0 15px rgba(53, 201, 139, 0.20);
+
+            animation: fadeUp 0.7s ease 0.1s both;
+        }
+
+
+        .selection-wrapper h1 {
+            margin-bottom: 10px;
+
+            color: #ffffff;
+
+            font-family: var(--font-main);
+
+            font-size: clamp(42px, 5vw, 58px);
+
+            font-weight: 600;
+
+            line-height: 0.95;
+
+            letter-spacing: 0.5px;
+
+            animation: titleReveal 0.8s ease 0.2s both;
+        }
+
+
+        .description {
+            margin-bottom: 45px;
+
+            color: var(--text-muted);
+
+            font-family: var(--font-main);
+            font-size: var(--font-main-size);
+
+            animation: fadeUp 0.7s ease 0.35s both;
+        }
+
+
+        /* Cards */
+
+        .cards {
+            width: 100%;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 28px;
+
+            max-width: 920px;
+
+            margin: 0 auto;
+        }
+
+
+        .selection-card {
+            position: relative;
+
+            min-width: 0;
+            height: 430px;
+
+            display: block;
+
+            overflow: hidden;
+
+            border-radius: var(--radius-card);
+
+            border: 1px solid rgba(53, 201, 139, 0.22);
+
+            background: #0a100d;
+
+            color: #ffffff;
+
+            text-decoration: none;
+
+            box-shadow:
+                0 20px 45px rgba(0, 0, 0, 0.35);
+
+            transition:
+                transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.4s ease,
+                box-shadow 0.4s ease;
+
+            animation:
+                cardEntrance 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+
+        .selection-card:nth-child(1) {
+            animation-delay: 0.45s;
+        }
+
+
+        .selection-card:nth-child(2) {
+            animation-delay: 0.6s;
+        }
+
+
+        .selection-card:hover {
+            transform: translateY(-9px);
+
+            border-color: rgba(53, 201, 139, 0.85);
+
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.65),
+                0 0 40px rgba(53, 201, 139, 0.14);
+        }
+
+
+        /* Card animated top line */
+
+        .selection-card::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: -100%;
+
+            width: 65%;
+            height: 2px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--green),
+                    transparent
+                );
+
+            z-index: 10;
+
+            animation: cardLine 4s ease-in-out infinite;
+        }
+
+
+        .selection-card:nth-child(2)::before {
+            animation-delay: 1.5s;
+        }
+
+
+        /* Card Image */
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+
+            display: block;
+
+            object-fit: cover;
+
+            transition:
+                transform 0.8s ease,
+                filter 0.8s ease;
+        }
+
+
+        .selection-card:hover .card-image {
+            transform: scale(1.08);
+
+            filter: brightness(1.08);
+        }
+
+
+        /* Card Overlay */
+
+        .card-overlay {
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    to top,
+                    rgba(5, 8, 6, 0.98) 5%,
+                    rgba(5, 8, 6, 0.82) 42%,
+                    rgba(5, 8, 6, 0.25) 75%,
+                    rgba(5, 8, 6, 0.08) 100%
+                );
+
+            transition:
+                background 0.4s ease;
+        }
+
+
+        .selection-card:hover .card-overlay {
+            background:
+                linear-gradient(
+                    to top,
+                    rgba(5, 8, 6, 0.98) 5%,
+                    rgba(5, 8, 6, 0.74) 45%,
+                    rgba(5, 8, 6, 0.15) 100%
+                );
+        }
+
+
+        /* Card Content */
+
+        .card-content {
+            position: absolute;
+
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            padding: 30px;
+
+            text-align: left;
+
+            z-index: 3;
+
+            animation: contentReveal 0.8s ease both;
+        }
+
+
+        .selection-card:nth-child(1) .card-content {
+            animation-delay: 0.85s;
+        }
+
+
+        .selection-card:nth-child(2) .card-content {
+            animation-delay: 1s;
+        }
+
+
+        .card-label {
+            display: inline-flex;
+            align-items: center;
+
+            padding: 6px 13px;
+
+            margin-bottom: 12px;
+
+            border-radius: 20px;
+
+            background: rgba(18, 59, 46, 0.95);
+
+            color: var(--green-light);
+
+            font-family: var(--font-main);
+            font-size: 15px;
+            font-weight: 500;
+
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+
+            border: 1px solid rgba(53, 201, 139, 0.18);
+        }
+
+
+        .card-content h2 {
+            margin-bottom: 8px;
+
+            color: #ffffff;
+
+            font-family: var(--font-main);
+
+            font-size: clamp(35px, 4vw, 44px);
+
+            font-weight: 600;
+
+            line-height: 0.95;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        .card-content p {
+            max-width: 500px;
+
+            margin-bottom: 20px;
+
+            color: rgba(255, 255, 255, 0.68);
+
+            font-family: var(--font-main);
+
+            font-size: 16px;
+
+            line-height: 1.45;
+        }
+
+
+        /* Button */
+
+        .card-button {
+            position: relative;
+
+            display: inline-flex;
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 10px 18px;
+
+            border-radius: var(--radius-small);
+
+            background: var(--green);
+
+            color: #04110b;
+
+            font-family: var(--font-main);
+
+            font-size: 16px;
+            font-weight: 600;
+
+            letter-spacing: 0.7px;
+
+            overflow: hidden;
+
+            transition:
+                background 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .card-button::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: -120%;
+
+            width: 70%;
+            height: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.35),
+                    transparent
+                );
+
+            transform: skewX(-20deg);
+
+            transition: left 0.5s ease;
+        }
+
+
+        .selection-card:hover .card-button {
+            background: var(--green-light);
+
+            transform: translateX(4px);
+
+            box-shadow:
+                0 7px 20px rgba(53, 201, 139, 0.20);
+        }
+
+
+        .selection-card:hover .card-button::before {
+            left: 130%;
+        }
+
+
+        /* Login */
+
+        .login-text {
+            margin-top: 35px;
+
+            color: var(--text-muted);
+
+            font-family: var(--font-main);
+            font-size: var(--font-main-size);
+
+            animation: fadeUp 0.7s ease 0.8s both;
+        }
+
+
+        .login-text a {
+            color: var(--green);
+
+            text-decoration: none;
+
+            font-family: var(--font-main);
+
+            font-weight: 600;
+
+            transition:
+                color 0.3s ease,
+                text-shadow 0.3s ease;
+        }
+
+
+        .login-text a:hover {
+            color: var(--green-light);
+
+            text-shadow:
+                0 0 10px rgba(53, 201, 139, 0.30);
+        }
+
+
+        /* Animations */
+
+        @keyframes navbarDrop {
+
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        @keyframes titleReveal {
+
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+                letter-spacing: 8px;
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                letter-spacing: 0.5px;
+            }
+
+        }
+
+
+        @keyframes cardEntrance {
+
+            from {
+                opacity: 0;
+                transform: translateY(35px) scale(0.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+        }
+
+
+        @keyframes contentReveal {
+
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        @keyframes backgroundPulse {
+
+            0%,
+            100% {
+                opacity: 0.035;
+
+                transform:
+                    translate(-50%, -50%)
+                    scale(1);
+            }
+
+            50% {
+                opacity: 0.06;
+
+                transform:
+                    translate(-50%, -50%)
+                    scale(1.08);
+            }
+
+        }
+
+
+        @keyframes sideGlow {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+
+                opacity: 0.02;
+            }
+
+            50% {
+                transform: translate(-40px, 40px) scale(1.15);
+
+                opacity: 0.04;
+            }
+
+        }
+
+
+        @keyframes cardLine {
+
+            0% {
+                left: -100%;
+            }
+
+            45%,
+            100% {
+                left: 140%;
+            }
+
+        }
+
+
+        /* Tablet */
+
+        @media (max-width: 1000px) {
+
+            .navbar-container {
+                padding: 0 30px;
+            }
+
+
+            .nav-links {
+                gap: 30px;
+            }
+
+
+            .main-container {
+                padding:
+                    115px 30px 60px;
+            }
+
+
+            .cards {
+                max-width: 850px;
+
+                gap: 22px;
+            }
+
+
+            .selection-card {
+                height: 410px;
+            }
+
+
+            .card-content {
+                padding: 25px;
+            }
+
+        }
+
+
+        /* Mobile */
+
+        @media (max-width: 750px) {
+
+            .navbar {
+                height: 70px;
+            }
+
+
+            .navbar-container {
+                padding: 0 18px;
+            }
+
+
+            .nav-links {
+                gap: 18px;
+            }
+
+
+            .nav-links a {
+                font-size: 13px;
+
+                letter-spacing: 1.5px;
+            }
+
+
+            .nav-links a::after {
+                bottom: 10px;
+            }
+
+
+            .main-container {
+                min-height: 100vh;
+
+                padding:
+                    105px 18px 50px;
+            }
+
+
+            .small-heading {
+                font-size: 15px;
+
+                letter-spacing: 2px;
+            }
+
+
+            .selection-wrapper h1 {
+                font-size: 43px;
+            }
+
+
+            .description {
+                margin-bottom: 32px;
+
+                font-size: 17px;
+            }
+
+
+            .cards {
+                grid-template-columns: 1fr;
+
+                max-width: 520px;
+
+                gap: 18px;
+            }
+
+
+            .selection-card {
+                height: 390px;
+            }
+
+
+            .card-content {
+                padding: 24px;
+            }
+
+
+            .card-label {
+                font-size: 14px;
+            }
+
+
+            .card-content h2 {
+                font-size: 38px;
+            }
+
+
+            .card-content p {
+                font-size: 15px;
+            }
+
+
+            .card-button {
+                font-size: 15px;
+            }
+
+
+            .login-text {
+                margin-top: 28px;
+
+                font-size: 16px;
+            }
+
+        }
+
+
+        /* Small Mobile */
+
+        @media (max-width: 450px) {
+
+            .navbar-container {
+                padding: 0 12px;
+            }
+
+
+            .nav-links {
+                gap: 10px;
+            }
+
+
+            .nav-links a {
+                font-size: 11px;
+
+                letter-spacing: 1px;
+            }
+
+
+            .main-container {
+                padding:
+                    100px 12px 45px;
+            }
+
+
+            .small-heading {
+                font-size: 14px;
+
+                letter-spacing: 1.5px;
+            }
+
+
+            .selection-wrapper h1 {
+                font-size: 37px;
+            }
+
+
+            .description {
+                font-size: 16px;
+
+                margin-bottom: 28px;
+            }
+
+
+            .cards {
+                gap: 15px;
+            }
+
+
+            .selection-card {
+                height: 370px;
+
+                border-radius: 15px;
+            }
+
+
+            .card-content {
+                padding: 20px;
+            }
+
+
+            .card-label {
+                padding: 5px 10px;
+
+                margin-bottom: 10px;
+
+                font-size: 12px;
+            }
+
+
+            .card-content h2 {
+                font-size: 34px;
+            }
+
+
+            .card-content p {
+                margin-bottom: 17px;
+
+                font-size: 14px;
+            }
+
+
+            .card-button {
+                padding: 9px 15px;
+
+                font-size: 14px;
+            }
+
+
+            .login-text {
+                font-size: 15px;
+            }
+
+        }
+
+
+        /* Extra Small */
+
+        @media (max-width: 360px) {
+
+            .nav-links {
+                gap: 7px;
+            }
+
+
+            .nav-links a {
+                font-size: 9px;
+
+                letter-spacing: 0.6px;
+            }
+
+
+            .main-container {
+                padding-left: 9px;
+                padding-right: 9px;
+            }
+
+
+            .selection-wrapper h1 {
+                font-size: 34px;
+            }
+
+
+            .selection-card {
+                height: 350px;
+            }
+
+
+            .card-content {
+                padding: 18px;
+            }
+
+
+            .card-content h2 {
+                font-size: 31px;
+            }
+
+        }
+
+
+        /* Reduced Motion */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+
+                animation-iteration-count: 1 !important;
+
+                scroll-behavior: auto !important;
+
+                transition-duration: 0.01ms !important;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar">
+
+        <div class="navbar-container">
+
+            <div class="nav-links">
+
+                <a href="{% url 'index' %}">
+                    HOME
+                </a>
+
+                <a href="{% url 'login' %}">
+                    LOGIN
+                </a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Main -->
+
+    <main class="main-container">
+
+        <div class="selection-wrapper">
+
+            <!-- Heading -->
+
+            <div class="small-heading">
+                Player Scouting System
+            </div>
+
+
+            <h1>
+                Choose Your Account
+            </h1>
+
+
+            <p class="description">
+                Select how you want to join the scouting platform
+            </p>
+
+
+            <!-- Registration Cards -->
+
+            <div class="cards">
+
+                <!-- Scout Card -->
+
+                <a
+                    href="{% url 'scout_register' %}"
+                    class="selection-card"
+                >
+
+                    <img
+                        src="{% static 'img/scout.jpg' %}"
+                        alt="Football Scout"
+                        class="card-image"
+                    >
+
+                    <div class="card-overlay"></div>
+
+                    <div class="card-content">
+
+                        <span class="card-label">
+                            Scouting
+                        </span>
+
+                        <h2>
+                            Scout
+                        </h2>
+
+                        <p>
+                            Discover talented football players,
+                            evaluate their abilities and build
+                            your scouting network.
+                        </p>
+
+                        <span class="card-button">
+                            Register as Scout →
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <!-- Academy Card -->
+
+                <a
+                    href="{% url 'academy_register' %}"
+                    class="selection-card"
+                >
+
+                    <img
+                        src="{% static 'img/academy.jpg' %}"
+                        alt="Football Academy"
+                        class="card-image"
+                    >
+
+                    <div class="card-overlay"></div>
+
+                    <div class="card-content">
+
+                        <span class="card-label">
+                            Development
+                        </span>
+
+                        <h2>
+                            Academy
+                        </h2>
+
+                        <p>
+                            Register your football academy,
+                            manage your players and showcase
+                            emerging talent.
+                        </p>
+
+                        <span class="card-button">
+                            Register as Academy →
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <!-- Login -->
+
+            <div class="login-text">
+
+                Already have an account?
+
+                <a href="{% url 'login' %}">
+                    Login
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

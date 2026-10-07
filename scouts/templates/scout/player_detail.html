@@ -1,0 +1,2147 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>{{ player.name }} | Player Details</title>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        :root {
+            --bg: #050505;
+            --surface: #080b0a;
+            --surface-light: #0d110f;
+            --surface-hover: #111713;
+
+            --green: #35c98b;
+            --green-light: #63e0ad;
+            --green-dark: #123b2e;
+
+            --text: #ffffff;
+            --muted: #9aa9a3;
+            --muted-light: #c0cbc6;
+
+            --border: rgba(53, 201, 139, 0.25);
+
+            --danger: #e74c3c;
+            --danger-light: #ff7568;
+
+            --radius: 15px;
+
+            --font: "Teko", sans-serif;
+        }
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            min-height: 100vh;
+
+            background: var(--bg);
+
+            color: var(--text);
+
+            font-family: var(--font);
+
+            overflow-x: hidden;
+        }
+
+
+        body::before {
+            content: "";
+
+            position: fixed;
+
+            top: -250px;
+            right: -200px;
+
+            width: 600px;
+            height: 600px;
+
+            background: radial-gradient(
+                circle,
+                rgba(53, 201, 139, 0.08),
+                transparent 65%
+            );
+
+            pointer-events: none;
+
+            animation: glowPulse 5s ease-in-out infinite;
+
+            z-index: -1;
+        }
+
+
+        a {
+            text-decoration: none;
+        }
+
+
+        /* Animations */
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        @keyframes sidebarIn {
+
+            from {
+                opacity: 0;
+                transform: translateX(-25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+        }
+
+
+        @keyframes glowPulse {
+
+            0% {
+                opacity: 0.35;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 0.35;
+            }
+
+        }
+
+
+        @keyframes linePulse {
+
+            0% {
+                opacity: 0.45;
+                transform: scaleX(0.7);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+
+            100% {
+                opacity: 0.45;
+                transform: scaleX(0.7);
+            }
+
+        }
+
+
+        @keyframes dotPulse {
+
+            0% {
+                box-shadow: 0 0 0 rgba(53, 201, 139, 0);
+            }
+
+            50% {
+                box-shadow: 0 0 12px rgba(53, 201, 139, 0.7);
+            }
+
+            100% {
+                box-shadow: 0 0 0 rgba(53, 201, 139, 0);
+            }
+
+        }
+
+
+        /* Sidebar */
+
+        .sidebar {
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 260px;
+            height: 100vh;
+
+            padding: 32px 20px 22px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            background: var(--surface);
+
+            border-right: 1px solid var(--border);
+
+            box-shadow: 8px 0 35px rgba(0, 0, 0, 0.35);
+
+            animation: sidebarIn 0.7s ease both;
+
+            z-index: 1000;
+        }
+
+
+        /* Brand */
+
+        .brand {
+            padding: 0 10px 30px;
+        }
+
+
+        .brand-title {
+            color: var(--text);
+
+            font-size: 27px;
+            font-weight: 600;
+
+            line-height: 1;
+
+            letter-spacing: 2px;
+        }
+
+
+        .brand-title span {
+            color: var(--green);
+        }
+
+
+        .brand-subtitle {
+            margin-top: 8px;
+
+            color: var(--muted);
+
+            font-size: 14px;
+
+            font-weight: 400;
+
+            letter-spacing: 2.5px;
+
+            text-transform: uppercase;
+        }
+
+
+        /* Navigation */
+
+        .nav {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+        }
+
+
+        .nav a {
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            min-height: 48px;
+
+            padding: 0 15px;
+
+            color: var(--muted);
+
+            font-size: 17px;
+
+            font-weight: 500;
+
+            letter-spacing: 1.5px;
+
+            border: 1px solid transparent;
+
+            border-radius: 9px;
+
+            transition:
+                color 0.3s ease,
+                background 0.3s ease,
+                border-color 0.3s ease,
+                transform 0.3s ease;
+        }
+
+
+        .nav a::before {
+            content: "";
+
+            width: 6px;
+            height: 6px;
+
+            margin-right: 12px;
+
+            border-radius: 50%;
+
+            background: #44534d;
+
+            transition:
+                background 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .nav a:hover {
+            color: var(--green-light);
+
+            background: rgba(53, 201, 139, 0.05);
+
+            border-color: rgba(53, 201, 139, 0.12);
+
+            transform: translateX(3px);
+        }
+
+
+        .nav a:hover::before {
+            background: var(--green);
+
+            box-shadow:
+                0 0 9px rgba(53, 201, 139, 0.7);
+        }
+
+
+        .nav a.active {
+            color: var(--green-light);
+
+            background: rgba(53, 201, 139, 0.08);
+
+            border-color: var(--border);
+        }
+
+
+        .nav a.active::before {
+            background: var(--green);
+
+            box-shadow:
+                0 0 6px rgba(53, 201, 139, 0.6);
+
+            animation: dotPulse 2s ease-in-out infinite;
+        }
+
+
+        /* Sidebar bottom */
+
+        .sidebar-bottom {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 14px;
+        }
+
+
+        .user-box {
+            padding: 16px;
+
+            background: var(--surface-light);
+
+            border: 1px solid var(--border);
+
+            border-radius: 12px;
+
+            transition:
+                border-color 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .user-box:hover {
+            border-color: rgba(53, 201, 139, 0.45);
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 25px rgba(53, 201, 139, 0.07);
+        }
+
+
+        .user-label {
+            color: var(--muted);
+
+            font-size: 13px;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+        }
+
+
+        .username {
+            margin-top: 4px;
+
+            color: var(--text);
+
+            font-size: 20px;
+
+            font-weight: 500;
+
+            letter-spacing: 1px;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+
+        .role {
+            margin-top: 2px;
+
+            color: var(--green);
+
+            font-size: 14px;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+        }
+
+
+        /* Logout */
+
+        .logout-form {
+            width: 100%;
+        }
+
+
+        .logout-button {
+            width: 100%;
+
+            padding: 11px 18px;
+
+            border: 1px solid rgba(231, 76, 60, 0.45);
+
+            border-radius: 8px;
+
+            background: transparent;
+
+            color: var(--danger-light);
+
+            font-family: var(--font);
+
+            font-size: 16px;
+
+            font-weight: 500;
+
+            letter-spacing: 1.5px;
+
+            cursor: pointer;
+
+            transition:
+                background 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .logout-button:hover {
+            background: var(--danger);
+
+            color: #ffffff;
+
+            border-color: var(--danger);
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 20px rgba(231, 76, 60, 0.18);
+        }
+
+
+        /* Main */
+
+        .main {
+            width: calc(100% - 260px);
+
+            min-height: 100vh;
+
+            margin-left: 260px;
+
+            padding: 45px 35px;
+        }
+
+
+        .container {
+            width: 100%;
+
+            max-width: 1250px;
+
+            margin: 0 auto;
+        }
+
+
+        /* Header */
+
+        .page-header {
+            display: flex;
+
+            align-items: flex-end;
+
+            justify-content: space-between;
+
+            gap: 25px;
+
+            margin-bottom: 40px;
+
+            animation: fadeUp 0.7s ease both;
+        }
+
+
+        .eyebrow {
+            margin-bottom: 9px;
+
+            color: var(--green);
+
+            font-size: 15px;
+
+            font-weight: 500;
+
+            letter-spacing: 3px;
+
+            text-transform: uppercase;
+        }
+
+
+        .page-title {
+            color: var(--text);
+
+            font-size: clamp(42px, 5vw, 62px);
+
+            font-weight: 500;
+
+            line-height: 0.95;
+
+            letter-spacing: 1px;
+        }
+
+
+        .page-title span {
+            color: var(--green);
+        }
+
+
+        .page-subtitle {
+            max-width: 700px;
+
+            margin-top: 15px;
+
+            color: var(--muted);
+
+            font-size: 19px;
+
+            line-height: 1.3;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        /* Buttons */
+
+        .back-button {
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            min-width: 190px;
+
+            padding: 12px 22px;
+
+            border: 1px solid var(--green);
+
+            border-radius: 8px;
+
+            background: transparent;
+
+            color: var(--green-light);
+
+            font-family: var(--font);
+
+            font-size: 17px;
+
+            font-weight: 500;
+
+            letter-spacing: 1.5px;
+
+            white-space: nowrap;
+
+            transition:
+                background 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .back-button:hover {
+            background: var(--green);
+
+            color: #050505;
+
+            border-color: var(--green);
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 22px rgba(53, 201, 139, 0.25);
+        }
+
+
+        .back-arrow {
+            font-size: 20px;
+
+            transition:
+                transform 0.3s ease;
+        }
+
+
+        .back-button:hover .back-arrow {
+            transform: translateX(-4px);
+        }
+
+
+        /* Player profile */
+
+        .player-profile {
+            position: relative;
+
+            display: grid;
+
+            grid-template-columns: 300px 1fr;
+
+            gap: 35px;
+
+            padding: 30px;
+
+            margin-bottom: 45px;
+
+            background: var(--surface);
+
+            border: 1px solid var(--border);
+
+            border-radius: var(--radius);
+
+            overflow: hidden;
+
+            animation: fadeUp 0.8s ease both;
+
+            transition:
+                border-color 0.35s ease,
+                box-shadow 0.35s ease;
+        }
+
+
+        .player-profile::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 3px;
+
+            background: var(--green);
+
+            transform-origin: center;
+
+            animation: linePulse 3s ease-in-out infinite;
+        }
+
+
+        .player-profile:hover {
+            border-color: rgba(53, 201, 139, 0.45);
+
+            box-shadow:
+                0 18px 40px rgba(53, 201, 139, 0.06);
+        }
+
+
+        /* Player image */
+
+        .profile-image-wrapper {
+            width: 100%;
+
+            height: 300px;
+
+            overflow: hidden;
+
+            border: 1px solid rgba(53, 201, 139, 0.25);
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #101612,
+                    #080b0a
+                );
+        }
+
+
+        .profile-image {
+            width: 100%;
+
+            height: 100%;
+
+            display: block;
+
+            object-fit: cover;
+
+            transition:
+                transform 0.5s ease;
+        }
+
+
+        .player-profile:hover .profile-image {
+            transform: scale(1.03);
+        }
+
+
+        .no-photo {
+            width: 100%;
+
+            height: 100%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: var(--green);
+
+            font-size: 50px;
+
+            font-weight: 500;
+
+            letter-spacing: 2px;
+        }
+
+
+        /* Profile content */
+
+        .profile-label {
+            color: var(--green);
+
+            font-size: 14px;
+
+            letter-spacing: 2.5px;
+
+            text-transform: uppercase;
+        }
+
+
+        .player-name {
+            margin-top: 7px;
+
+            color: var(--text);
+
+            font-size: 48px;
+
+            font-weight: 500;
+
+            line-height: 0.95;
+
+            letter-spacing: 1px;
+        }
+
+
+        .player-position {
+            margin-top: 8px;
+
+            color: var(--green-light);
+
+            font-size: 19px;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+        }
+
+
+        .basic-info-grid {
+            display: grid;
+
+            grid-template-columns: repeat(2, 1fr);
+
+            gap: 10px;
+
+            margin-top: 25px;
+        }
+
+
+        .basic-info {
+            padding: 12px 14px;
+
+            background: var(--surface-light);
+
+            border: 1px solid rgba(53, 201, 139, 0.12);
+
+            border-radius: 9px;
+        }
+
+
+        .basic-label {
+            color: var(--muted);
+
+            font-size: 12px;
+
+            letter-spacing: 1.3px;
+
+            text-transform: uppercase;
+        }
+
+
+        .basic-value {
+            margin-top: 2px;
+
+            color: var(--text);
+
+            font-size: 18px;
+
+            font-weight: 500;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        .shortlisted-badge {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin-top: 20px;
+
+            padding: 9px 16px;
+
+            border: 1px solid var(--green);
+
+            border-radius: 8px;
+
+            background: rgba(53, 201, 139, 0.1);
+
+            color: var(--green-light);
+
+            font-size: 16px;
+
+            letter-spacing: 1px;
+        }
+
+
+        .shortlisted-dot {
+            width: 7px;
+
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: var(--green);
+
+            box-shadow:
+                0 0 8px rgba(53, 201, 139, 0.7);
+        }
+
+
+        /* Metric sections */
+
+        .metric-section {
+            margin-bottom: 38px;
+
+            animation: fadeUp 0.8s ease both;
+        }
+
+
+        .section-title {
+            position: relative;
+
+            display: inline-block;
+
+            margin-bottom: 22px;
+
+            color: var(--text);
+
+            font-size: 29px;
+
+            font-weight: 500;
+
+            letter-spacing: 1.5px;
+        }
+
+
+        .section-title::after {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+
+            bottom: -5px;
+
+            width: 45px;
+
+            height: 2px;
+
+            background: var(--green);
+
+            transform-origin: left;
+
+            animation: linePulse 2.5s ease-in-out infinite;
+        }
+
+
+        .metrics-card {
+            position: relative;
+
+            padding: 22px;
+
+            background: var(--surface);
+
+            border: 1px solid var(--border);
+
+            border-radius: var(--radius);
+
+            overflow: hidden;
+        }
+
+
+        .metrics-card::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 2px;
+
+            background: rgba(53, 201, 139, 0.45);
+        }
+
+
+        .metrics-grid {
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 12px;
+        }
+
+
+        .metric {
+            min-height: 105px;
+
+            padding: 17px;
+
+            background: var(--surface-light);
+
+            border: 1px solid rgba(53, 201, 139, 0.12);
+
+            border-radius: 10px;
+
+            transition:
+                transform 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .metric:hover {
+            transform: translateY(-4px);
+
+            border-color: rgba(53, 201, 139, 0.45);
+
+            box-shadow:
+                0 10px 25px rgba(53, 201, 139, 0.06);
+        }
+
+
+        .metric-name {
+            color: var(--muted);
+
+            font-size: 14px;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+        }
+
+
+        .metric-value {
+            margin-top: 5px;
+
+            color: var(--green-light);
+
+            font-size: 28px;
+
+            font-weight: 500;
+
+            line-height: 1;
+        }
+
+
+        /* Bottom buttons */
+
+        .footer-buttons {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 12px;
+
+            margin-top: 45px;
+
+            padding-top: 25px;
+
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+
+            animation: fadeUp 1s ease both;
+        }
+
+
+        .footer-button {
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            min-width: 200px;
+
+            padding: 12px 22px;
+
+            border: 1px solid var(--green);
+
+            border-radius: 8px;
+
+            background: transparent;
+
+            color: var(--green-light);
+
+            font-size: 17px;
+
+            font-weight: 500;
+
+            letter-spacing: 1.5px;
+
+            transition:
+                background 0.3s ease,
+                color 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .footer-button:hover {
+            background: var(--green);
+
+            color: #050505;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 22px rgba(53, 201, 139, 0.25);
+        }
+
+
+        .footer-arrow {
+            font-size: 20px;
+
+            transition:
+                transform 0.3s ease;
+        }
+
+
+        .footer-button:hover .footer-arrow {
+            transform: translateX(4px);
+        }
+
+
+        /* Footer */
+
+        footer {
+            margin-top: 55px;
+
+            padding-top: 20px;
+
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+
+            color: #65736d;
+
+            font-size: 14px;
+
+            letter-spacing: 1.5px;
+
+            text-align: center;
+        }
+
+
+        /* Tablet */
+
+        @media (max-width: 1100px) {
+
+            .sidebar {
+                width: 230px;
+            }
+
+
+            .main {
+                width: calc(100% - 230px);
+
+                margin-left: 230px;
+
+                padding: 40px 28px;
+            }
+
+
+            .player-profile {
+                grid-template-columns: 250px 1fr;
+            }
+
+
+            .profile-image-wrapper {
+                height: 250px;
+            }
+
+
+            .metrics-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+        }
+
+
+        /* Mobile */
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+                position: relative;
+
+                width: 100%;
+
+                height: auto;
+
+                min-height: auto;
+
+                padding: 25px 20px 20px;
+
+                border-right: none;
+
+                border-bottom: 1px solid var(--border);
+            }
+
+
+            .brand {
+                padding-bottom: 22px;
+            }
+
+
+            .nav {
+                display: grid;
+
+                grid-template-columns: repeat(2, 1fr);
+
+                gap: 7px;
+            }
+
+
+            .nav a {
+                justify-content: center;
+
+                padding: 10px;
+
+                font-size: 15px;
+            }
+
+
+            .nav a::before {
+                display: none;
+            }
+
+
+            .sidebar-bottom {
+                margin-top: 20px;
+            }
+
+
+            .main {
+                width: 100%;
+
+                margin-left: 0;
+
+                padding: 35px 20px;
+            }
+
+
+            .page-header {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                margin-bottom: 35px;
+            }
+
+
+            .page-title {
+                font-size: 46px;
+            }
+
+
+            .back-button {
+                width: 100%;
+            }
+
+
+            .player-profile {
+                grid-template-columns: 1fr;
+
+                gap: 25px;
+
+                padding: 22px;
+            }
+
+
+            .profile-image-wrapper {
+                width: 100%;
+
+                max-width: 330px;
+
+                height: 330px;
+
+                margin: 0 auto;
+            }
+
+
+            .player-name {
+                font-size: 40px;
+            }
+
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+
+        /* Small mobile */
+
+        @media (max-width: 560px) {
+
+            .sidebar {
+                padding: 22px 15px 18px;
+            }
+
+
+            .brand-title {
+                font-size: 24px;
+            }
+
+
+            .brand-subtitle {
+                font-size: 12px;
+            }
+
+
+            .nav {
+                grid-template-columns: 1fr;
+            }
+
+
+            .nav a {
+                justify-content: flex-start;
+
+                padding-left: 14px;
+            }
+
+
+            .nav a::before {
+                display: block;
+            }
+
+
+            .main {
+                padding: 30px 15px;
+            }
+
+
+            .page-title {
+                font-size: 40px;
+            }
+
+
+            .page-subtitle {
+                font-size: 17px;
+            }
+
+
+            .player-profile {
+                padding: 18px;
+            }
+
+
+            .profile-image-wrapper {
+                height: 260px;
+            }
+
+
+            .player-name {
+                font-size: 35px;
+            }
+
+
+            .basic-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .section-title {
+                font-size: 25px;
+            }
+
+
+            .metrics-card {
+                padding: 15px;
+            }
+
+
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+
+                gap: 9px;
+            }
+
+
+            .metric {
+                min-height: 95px;
+
+                padding: 13px;
+            }
+
+
+            .metric-name {
+                font-size: 12px;
+            }
+
+
+            .metric-value {
+                font-size: 24px;
+            }
+
+
+            .footer-buttons {
+                flex-direction: column;
+            }
+
+
+            .footer-button {
+                width: 100%;
+            }
+
+        }
+
+
+        /* Reduced motion */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+
+                animation-iteration-count: 1 !important;
+
+                transition-duration: 0.01ms !important;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div>
+
+            <div class="brand">
+
+                <div class="brand-title">
+                    PLAYER <span>SCOUTING</span>
+                </div>
+
+                <div class="brand-subtitle">
+                    Scout Panel
+                </div>
+
+            </div>
+
+
+            <nav class="nav">
+
+                <a href="{% url 'scout_dashboard' %}">
+                    Dashboard
+                </a>
+
+                <a href="{% url 'academy_lists' %}">
+                    Academies
+                </a>
+
+                <a href="{% url 'search_players' %}">
+                    Search Players
+                </a>
+
+                <a
+                    href="{% url 'shortlisted_players' %}"
+                    class="active"
+                >
+                    Shortlisted Players
+                </a>
+
+            </nav>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="user-box">
+
+                <div class="user-label">
+                    Logged in as
+                </div>
+
+                <div class="username">
+                    {{ request.user.username }}
+                </div>
+
+                <div class="role">
+                    Scout
+                </div>
+
+            </div>
+
+
+            <form
+                method="POST"
+                action="{% url 'logout' %}"
+                class="logout-form"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-button"
+                >
+                    Logout
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- Main -->
+
+    <main class="main">
+
+        <div class="container">
+
+
+            <!-- Page Header -->
+
+            <header class="page-header">
+
+                <div>
+
+                    <div class="eyebrow">
+                        Scout Panel
+                    </div>
+
+                    <h1 class="page-title">
+                        Player <span>Details</span>
+                    </h1>
+
+                    <p class="page-subtitle">
+                        Complete scouting profile and performance metrics.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="{% url 'shortlisted_players' %}"
+                    class="back-button"
+                >
+
+                    <span class="back-arrow">
+                        ←
+                    </span>
+
+                    Back to Shortlist
+
+                </a>
+
+            </header>
+
+
+            <!-- Player Profile -->
+
+            <section class="player-profile">
+
+
+                <!-- Player Photo -->
+
+                <div>
+
+                    <div class="profile-image-wrapper">
+
+                        {% if player.photo %}
+
+                            <img
+                                src="{{ player.photo.url }}"
+                                alt="{{ player.name }}"
+                                class="profile-image"
+                            >
+
+                        {% else %}
+
+                            <div class="no-photo">
+                                PLAYER
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Player Information -->
+
+                <div>
+
+                    <div class="profile-label">
+                        Scouting Profile
+                    </div>
+
+                    <h2 class="player-name">
+                        {{ player.name }}
+                    </h2>
+
+                    <div class="player-position">
+                        {{ player.position }}
+                    </div>
+
+
+                    <div class="basic-info-grid">
+
+
+                        <div class="basic-info">
+
+                            <div class="basic-label">
+                                Academy
+                            </div>
+
+                            <div class="basic-value">
+                                {{ player.academy.name }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="basic-info">
+
+                            <div class="basic-label">
+                                Age
+                            </div>
+
+                            <div class="basic-value">
+                                {{ player.age }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="basic-info">
+
+                            <div class="basic-label">
+                                Preferred Foot
+                            </div>
+
+                            <div class="basic-value">
+                                {{ player.preferred_foot }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="basic-info">
+
+                            <div class="basic-label">
+                                Height
+                            </div>
+
+                            <div class="basic-value">
+                                {{ player.height }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="basic-info">
+
+                            <div class="basic-label">
+                                Weight
+                            </div>
+
+                            <div class="basic-value">
+                                {{ player.weight }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="basic-info">
+
+                            <div class="basic-label">
+                                Phone
+                            </div>
+
+                            <div class="basic-value">
+                                {{ player.phone }}
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    {% if is_shortlisted %}
+
+                        <div class="shortlisted-badge">
+
+                            <span class="shortlisted-dot"></span>
+
+                            Shortlisted Player
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+            </section>
+
+
+            <!-- Performance Metrics -->
+
+            <section class="metric-section">
+
+                <h2 class="section-title">
+                    Performance Metrics
+                </h2>
+
+
+                <div class="metrics-card">
+
+                    <div class="metrics-grid">
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Speed
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.speed }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Shooting
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.shooting }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Passing
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.passing }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Dribbling
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.dribbling }}
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Technical Metrics -->
+
+            <section class="metric-section">
+
+                <h2 class="section-title">
+                    Technical Metrics
+                </h2>
+
+
+                <div class="metrics-card">
+
+                    <div class="metrics-grid">
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Ball Control
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.ball_control }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Crossing
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.crossing }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Finishing
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.finishing }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Heading
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.heading }}
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Physical Metrics -->
+
+            <section class="metric-section">
+
+                <h2 class="section-title">
+                    Physical Metrics
+                </h2>
+
+
+                <div class="metrics-card">
+
+                    <div class="metrics-grid">
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Acceleration
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.acceleration }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Agility
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.agility }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Balance
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.balance }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Stamina
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.stamina }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Strength
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.strength }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Jumping
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.jumping }}
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Defensive Metrics -->
+
+            <section class="metric-section">
+
+                <h2 class="section-title">
+                    Defensive Metrics
+                </h2>
+
+
+                <div class="metrics-card">
+
+                    <div class="metrics-grid">
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Defending
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.defending }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Tackling
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.tackling }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Interceptions
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.interceptions }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Marking
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.marking }}
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Mental and Tactical Metrics -->
+
+            <section class="metric-section">
+
+                <h2 class="section-title">
+                    Mental & Tactical Metrics
+                </h2>
+
+
+                <div class="metrics-card">
+
+                    <div class="metrics-grid">
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Vision
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.vision }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Decision Making
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.decision_making }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Positioning
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.positioning }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+                                Composure
+                            </div>
+
+                            <div class="metric-value">
+                                {{ player.composure }}
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Bottom Buttons -->
+
+            <div class="footer-buttons">
+
+                <a
+                    href="{% url 'shortlisted_players' %}"
+                    class="footer-button"
+                >
+
+                    ←
+
+                    Back to Shortlisted Players
+
+                </a>
+
+
+                <a
+                    href="{% url 'academy_lists' %}"
+                    class="footer-button"
+                >
+
+                    Browse Academies
+
+                    <span class="footer-arrow">
+                        →
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- Footer -->
+
+            <footer>
+                Player Scouting System © 2026
+            </footer>
+
+
+        </div>
+
+    </main>
+
+
+</body>
+
+</html>

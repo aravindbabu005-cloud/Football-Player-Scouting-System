@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>View Certificate | Player Scouting System</title>
+
+    <style>
+
+        /* =========================================================
+           GLOBAL
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #050807;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
+        .navbar {
+            height: 76px;
+            background: #0a0f0d;
+            border-bottom: 1px solid #123b2e;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 50px;
+
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand {
+            color: #35c98b;
+            text-decoration: none;
+            font-size: 26px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: #d7e5df;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 1px;
+
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #35c98b;
+        }
+
+        .logout {
+            color: #ff6b6b !important;
+        }
+
+        .logout:hover {
+            color: #ff8585 !important;
+        }
+
+
+        /* =========================================================
+           MAIN
+        ========================================================= */
+
+        .container {
+            width: 90%;
+            max-width: 850px;
+            margin: 60px auto;
+        }
+
+
+        /* =========================================================
+           HEADER
+        ========================================================= */
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #8ea49a;
+            font-size: 14px;
+        }
+
+
+        /* =========================================================
+           CERTIFICATE CARD
+        ========================================================= */
+
+        .certificate-card {
+            background: #0b1210;
+            border: 1px solid #173d30;
+            border-radius: 18px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 0 30px rgba(53, 201, 139, 0.06);
+
+            transition: 0.3s;
+        }
+
+        .certificate-card:hover {
+            border-color: #35c98b;
+            box-shadow:
+                0 0 35px rgba(53, 201, 139, 0.10);
+        }
+
+
+        /* =========================================================
+           USER DETAILS
+        ========================================================= */
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+
+            margin-bottom: 30px;
+        }
+
+        .detail-box {
+            background: #07100d;
+            border: 1px solid #15372c;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .detail-box span {
+            display: block;
+            color: #71867d;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .detail-box strong {
+            color: #ffffff;
+            font-size: 15px;
+            word-break: break-word;
+        }
+
+        .role {
+            color: #35c98b !important;
+        }
+
+
+        /* =========================================================
+           DIVIDER
+        ========================================================= */
+
+        .divider {
+            height: 1px;
+            background: #173d30;
+            margin: 10px 0 30px;
+        }
+
+
+        /* =========================================================
+           CERTIFICATE SECTION
+        ========================================================= */
+
+        .certificate-section h2 {
+            color: #ffffff;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .file-name {
+            background: #07100d;
+            border: 1px solid #15372c;
+            border-radius: 10px;
+
+            padding: 15px;
+
+            color: #9bb0a7;
+            font-size: 13px;
+
+            margin-bottom: 25px;
+
+            word-break: break-all;
+        }
+
+        .file-name strong {
+            color: #35c98b;
+        }
+
+
+        /* =========================================================
+           BUTTONS
+        ========================================================= */
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            display: inline-block;
+
+            padding: 12px 22px;
+
+            border-radius: 9px;
+
+            text-decoration: none;
+
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+
+            transition: 0.3s;
+        }
+
+        .view-button {
+            background: #35c98b;
+            color: #06100c;
+        }
+
+        .view-button:hover {
+            background: #63e0ad;
+            transform: translateY(-2px);
+        }
+
+        .download-button {
+            background: #123b2e;
+            color: #63e0ad;
+            border: 1px solid #24684f;
+        }
+
+        .download-button:hover {
+            background: #184d3a;
+            border-color: #35c98b;
+            transform: translateY(-2px);
+        }
+
+        .back-button {
+            display: inline-block;
+
+            margin-top: 30px;
+
+            color: #8ea49a;
+            text-decoration: none;
+
+            font-size: 13px;
+
+            transition: 0.3s;
+        }
+
+        .back-button:hover {
+            color: #35c98b;
+        }
+
+
+        /* =========================================================
+           NO CERTIFICATE
+        ========================================================= */
+
+        .no-certificate {
+            background: #140d0d;
+            border: 1px solid #4b2424;
+            border-radius: 10px;
+
+            padding: 18px;
+
+            color: #ff8c8c;
+            font-size: 14px;
+        }
+
+
+        /* =========================================================
+           MOBILE
+        ========================================================= */
+
+        @media (max-width: 768px) {
+
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .nav-links a {
+                font-size: 11px;
+            }
+
+            .container {
+                width: 92%;
+                margin: 40px auto;
+            }
+
+            .page-header h1 {
+                font-size: 27px;
+            }
+
+            .details {
+                grid-template-columns: 1fr;
+            }
+
+            .certificate-card {
+                padding: 25px;
+            }
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .navbar {
+                height: auto;
+                min-height: 70px;
+                padding: 15px;
+            }
+
+            .brand {
+                font-size: 21px;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-links a {
+                font-size: 9px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .button {
+                text-align: center;
+                width: 100%;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+    <!-- =========================================================
+         NAVBAR
+    ========================================================= -->
+
+    <nav class="navbar">
+
+        <a href="{% url 'admin_dashboard' %}" class="brand">
+            PS
+        </a>
+
+        <div class="nav-links">
+
+            <a href="{% url 'admin_dashboard' %}">
+                DASHBOARD
+            </a>
+
+            <a href="{% url 'pending_users' %}">
+                PENDING
+            </a>
+
+            <a href="{% url 'view_scouts' %}">
+                SCOUTS
+            </a>
+
+            <a href="{% url 'view_academies' %}">
+                ACADEMIES
+            </a>
+
+            <a href="{% url 'logout' %}" class="logout">
+                LOGOUT
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================= -->
+
+    <main class="container">
+
+        <div class="page-header">
+
+            <h1>Certificate Details</h1>
+
+            <p>
+                View the certificate submitted during registration.
+            </p>
+
+        </div>
+
+
+        <div class="certificate-card">
+
+
+            <!-- =================================================
+                 USER DETAILS
+            ================================================== -->
+
+            <div class="details">
+
+                <div class="detail-box">
+
+                    <span>Username</span>
+
+                    <strong>
+                        {{ profile.user.username }}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-box">
+
+                    <span>Email</span>
+
+                    <strong>
+                        {{ profile.user.email }}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-box">
+
+                    <span>Role</span>
+
+                    <strong class="role">
+                        {{ profile.role|title }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="divider"></div>
+
+
+            <!-- =================================================
+                 CERTIFICATE
+            ================================================== -->
+
+            {% if profile.certificate %}
+
+                <div class="certificate-section">
+
+                    <h2>
+                        Uploaded Certificate
+                    </h2>
+
+                    <div class="file-name">
+
+                        <strong>File:</strong>
+
+                        {{ profile.certificate.name }}
+
+                    </div>
+
+
+                    <div class="buttons">
+
+                        <a
+                            href="{{ profile.certificate.url }}"
+                            target="_blank"
+                            class="button view-button"
+                        >
+                            VIEW CERTIFICATE
+                        </a>
+
+
+                        <a
+                            href="{{ profile.certificate.url }}"
+                            download
+                            class="button download-button"
+                        >
+                            DOWNLOAD CERTIFICATE
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% else %}
+
+                <div class="no-certificate">
+
+                    No certificate uploaded.
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 BACK
+            ================================================== -->
+
+            <a
+                href="javascript:history.back()"
+                class="back-button"
+            >
+                ← BACK
+            </a>
+
+        </div>
+
+    </main>
+
+</body>
+</html>

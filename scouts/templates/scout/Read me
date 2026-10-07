@@ -1,0 +1,774 @@
+# Player Scouting System
+
+A Django-based web application designed to connect **football academies and scouts** through a centralized player management and scouting platform.
+
+The system allows academies to add and manage football players, while scouts can search for players based on specific requirements, view detailed player profiles, calculate player matching percentages, and maintain a personal shortlist.
+
+---
+
+## About the Project
+
+The **Player Scouting System** is a web-based football scouting platform developed using **Python and Django**.
+
+The main purpose of the system is to provide a structured platform where:
+
+* **Admins** verify and manage Academy and Scout accounts.
+* **Academies** add and manage their football players.
+* **Scouts** search and filter available players.
+* Scouts can view detailed player information and skills.
+* Scouts can shortlist players they are interested in.
+* Academies can initially add players with basic information and complete their evaluation later.
+
+The application has three main roles:
+
+```text
+                    ADMIN
+                      |
+              Approves Users
+                      |
+             +--------+--------+
+             |                 |
+             v                 v
+          ACADEMY             SCOUT
+             |                 |
+       Adds Players      Searches Players
+             |                 |
+       Evaluates Players      |
+             |                 |
+             +------ PLAYER ---+
+                       |
+                  Player Details
+                       |
+                   Shortlist
+```
+
+---
+
+## Main Features
+
+### Admin
+
+* Admin dashboard
+* View pending registrations
+* Review uploaded certificates
+* Approve Academy accounts
+* Reject Academy accounts
+* Approve Scout accounts
+* Reject Scout accounts
+* View registered academies
+* View academy players
+* Delete academies
+* View registered scouts
+* Delete scouts
+* View uploaded certificates
+
+### Academy
+
+* Academy registration
+* Certificate upload
+* Admin approval system
+* Academy dashboard
+* Add fully evaluated players
+* Add unevaluated players
+* View unevaluated players
+* Evaluate unevaluated players later
+* Manage players
+* Update player information
+* Delete players
+* Upload player photographs
+
+### Scout
+
+* Scout registration
+* Certificate upload
+* Admin approval system
+* Scout dashboard
+* Browse academies
+* Browse academy players
+* Search players
+* Filter players using requirements
+* Calculate player matching percentage
+* View detailed player profiles
+* Shortlist players
+* View shortlisted players
+* Remove players from shortlist
+
+---
+
+## User Roles
+
+### Admin
+
+The Admin is responsible for controlling access to the system.
+
+When an Academy or Scout registers, the account remains **pending** until the Admin verifies the submitted information and approves the account.
+
+The Admin can:
+
+```text
+Registration
+     |
+   Pending
+     |
+Admin Reviews
+     |
+ +---+----+
+ |        |
+ v        v
+Approve  Reject
+ |
+Access System
+```
+
+The Admin also has access to academy, scout, and player management features.
+
+---
+
+## Academy
+
+The Academy is the main source of player information.
+
+After registration and Admin approval, an Academy can access its dashboard and manage its players.
+
+Academies can:
+
+* Add players
+* Update players
+* Delete players
+* Upload player photos
+* Add complete player information
+* Add basic player information first
+* Complete player evaluation later
+
+---
+
+## Player Management
+
+The system supports **two different ways of adding players**.
+
+### 1. Add Fully Evaluated Player
+
+The Academy can directly add a player with complete information.
+
+The form contains:
+
+#### Basic Information
+
+* Player name
+* Age
+* Position
+* Preferred foot
+* Height
+* Weight
+* Phone number
+* Player photograph
+
+#### Technical Skills
+
+* Speed
+* Shooting
+* Passing
+* Dribbling
+* Ball control
+* Crossing
+* Finishing
+* Heading
+
+#### Physical Skills
+
+* Acceleration
+* Agility
+* Balance
+* Stamina
+* Strength
+* Jumping
+
+#### Defensive Skills
+
+* Defending
+* Tackling
+* Interceptions
+* Marking
+
+#### Mental and Tactical Skills
+
+* Vision
+* Decision making
+* Positioning
+* Composure
+
+Skill values are stored using a scale from:
+
+```text
+0 -------------------- 100
+Low                    High
+```
+
+---
+
+## Unevaluated Players
+
+The system also allows an Academy to add a player **before completing the full evaluation**.
+
+This is useful when the Academy only has basic player information initially.
+
+The Academy only needs to provide:
+
+```text
+Player Name
+Age
+Position
+```
+
+The player is stored in the same `Player` table with:
+
+```python
+is_evaluated = False
+```
+
+The workflow is:
+
+```text
+Academy
+   |
+   v
+Add Unevaluated Player
+   |
+   +-- Name
+   +-- Age
+   +-- Position
+   |
+   v
+Player Created
+   |
+   v
+is_evaluated = False
+   |
+   v
+Unevaluated Players
+   |
+   v
+Evaluate
+   |
+   v
+Complete Player Information
+   |
+   v
+is_evaluated = True
+```
+
+There is **no separate PlayerRegistration model** for this process.
+
+Unevaluated players are stored directly in the `Player` model.
+
+---
+
+## Player Evaluation
+
+When an Academy opens the **Unevaluated Players** section, players waiting for evaluation are displayed.
+
+Each player has an **Evaluate** button.
+
+```text
+Unevaluated Players
+
+Player        Age     Position       Status          Action
+------------------------------------------------------------
+Arun          19      Forward        Not Evaluated   Evaluate
+Rahul         20      Midfielder     Not Evaluated   Evaluate
+```
+
+Selecting **Evaluate** opens the full player update form.
+
+The Academy can then add:
+
+* Preferred foot
+* Height
+* Weight
+* Phone
+* Photo
+* Technical skills
+* Physical skills
+* Defensive skills
+* Mental and tactical skills
+
+After the evaluation is completed:
+
+```python
+player.is_evaluated = True
+```
+
+The player then becomes an evaluated player and can be managed normally.
+
+---
+
+## Scout
+
+The Scout module is designed for discovering suitable football players.
+
+After registering and receiving approval from the Admin, Scouts can access the scouting features.
+
+Scouts can:
+
+1. Browse academies
+2. View players
+3. Search players
+4. Enter player requirements
+5. Compare requirements with player information
+6. View matching percentages
+7. Open detailed player profiles
+8. Shortlist suitable players
+
+---
+
+## Player Search and Matching
+
+One of the main features of the system is the **player search and matching system**.
+
+A Scout can provide requirements such as:
+
+* Position
+* Age
+* Preferred foot
+* Height
+* Weight
+* Speed
+* Shooting
+* Passing
+* Dribbling
+* Technical attributes
+* Physical attributes
+* Defensive attributes
+* Mental and tactical attributes
+
+The system compares the Scout's requirements with the available player information and calculates a **matching percentage**.
+
+Example:
+
+```text
+Player A        94% Match
+Player B        87% Match
+Player C        76% Match
+Player D        68% Match
+```
+
+A higher percentage indicates that the player's available information is closer to the Scout's selected requirements.
+
+---
+
+## Shortlist
+
+The shortlist allows Scouts to save players they are interested in.
+
+Instead of searching for the same player repeatedly, the Scout can access the player from the shortlist.
+
+Each Scout has an independent shortlist.
+
+```text
+Scout A
+ |
+ +-- Player 1
+ +-- Player 4
+ +-- Player 7
+
+Scout B
+ |
+ +-- Player 2
+ +-- Player 5
+```
+
+The system also prevents the same Scout from adding the same player multiple times.
+
+This is implemented using a unique relationship between:
+
+```text
+Scout + Player
+```
+
+---
+
+## Authentication and Authorization
+
+The project uses **Django's built-in authentication system** and session-based access control.
+
+Different users receive access according to their role.
+
+```text
+Admin
+  |
+  +-- Administrative Features
+
+Academy
+  |
+  +-- Own Player Management
+
+Scout
+  |
+  +-- Player Search
+  +-- Player Details
+  +-- Shortlist
+```
+
+Academy and Scout accounts must be approved by the Admin before they can use the main features.
+
+---
+
+## Certificate Verification
+
+Academies and Scouts are required to upload a certificate during registration.
+
+The certificate is used by the Admin during the verification process.
+
+The system supports certificate uploads through Django's file handling functionality.
+
+Certificates are stored under:
+
+```text
+media/
+└── certificate/
+```
+
+The Admin can open and review submitted certificates before approving an account.
+
+---
+
+## Database Structure
+
+The project uses Django ORM for database operations.
+
+The main models are:
+
+```text
+User
+ |
+ +-- UserProfile
+ |
+ +-- Academy
+       |
+       +-- Player
+              |
+              +-- ShortlistedPlayer
+                       |
+                       +-- User (Scout)
+```
+
+### UserProfile
+
+Stores additional information related to a Django User.
+
+Important fields include:
+
+* User
+* Role
+* Current club
+* Certificate
+* Approval status
+
+### Academy
+
+Stores Academy information.
+
+Important fields include:
+
+* User
+* Academy name
+* Location
+* Approval status
+
+Relationship:
+
+```text
+Academy
+   |
+   +-- Multiple Players
+```
+
+### Player
+
+Stores football player information.
+
+Important fields include:
+
+#### Basic
+
+* Academy
+* Evaluation status
+* Name
+* Age
+* Position
+* Preferred foot
+* Height
+* Weight
+* Phone
+* Photo
+
+#### Technical
+
+* Speed
+* Shooting
+* Passing
+* Dribbling
+* Ball control
+* Crossing
+* Finishing
+* Heading
+
+#### Physical
+
+* Acceleration
+* Agility
+* Balance
+* Stamina
+* Strength
+* Jumping
+
+#### Defensive
+
+* Defending
+* Tackling
+* Interceptions
+* Marking
+
+#### Mental and Tactical
+
+* Vision
+* Decision making
+* Positioning
+* Composure
+
+### ShortlistedPlayer
+
+Connects a Scout with a Player.
+
+Important fields:
+
+* Scout
+* Player
+* Shortlisted date
+
+The model uses a unique relationship between Scout and Player so that the same player cannot be shortlisted multiple times by the same Scout.
+
+---
+
+## Technologies Used
+
+### Backend
+
+* Python
+* Django
+* Django ORM
+* Django Authentication
+* Django Sessions
+
+### Frontend
+
+* HTML5
+* CSS3
+* JavaScript
+* Bootstrap
+* Bootstrap Icons
+* Google Fonts
+
+### Database
+
+* SQLite
+
+### File Handling
+
+* Django `FileField`
+* Django `ImageField`
+
+### Development Tools
+
+* Git
+* GitHub
+* Visual Studio Code
+* Python Virtual Environment
+
+---
+
+## Project Structure
+
+```text
+Player Scouting System/
+|
+├── myproject/
+│   ├── settings.py
+│   ├── urls.py
+│   ├── wsgi.py
+│   └── asgi.py
+|
+├── scouts/
+│   ├── migrations/
+│   ├── templates/
+│   │   ├── admin/
+│   │   ├── academy/
+│   │   └── scout/
+│   │
+│   ├── admin.py
+│   ├── models.py
+│   ├── views.py
+│   └── urls.py
+|
+├── static/
+|
+├── media/
+│   ├── certificate/
+│   └── players/
+|
+├── manage.py
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## Complete Project Workflow
+
+```text
+                         ADMIN
+                           |
+                    Approves Accounts
+                           |
+             +-------------+-------------+
+             |                           |
+             v                           v
+          ACADEMY                       SCOUT
+             |                           |
+             v                           v
+      Add Player                  Search Players
+             |                           |
+       +-----+-----+                     |
+       |           |                     |
+       v           v                     v
+   Evaluated   Unevaluated          View Player
+    Player       Player                 |
+       |           |                    v
+       |           v                 Shortlist
+       |        Evaluate                 |
+       |           |                     v
+       |           v              Shortlisted Players
+       |      Full Evaluation
+       |           |
+       +-----------+----------------+
+                   |
+                   v
+              Player Data
+```
+
+---
+
+## Screenshots
+
+Screenshots can be added here to demonstrate the main features of the application.
+
+### Login Page
+
+```markdown
+![Login Page](screenshots/login.png)
+```
+
+### Admin Dashboard
+
+```markdown
+![Admin Dashboard](screenshots/admin-dashboard.png)
+```
+
+### Academy Dashboard
+
+```markdown
+![Academy Dashboard](screenshots/academy-dashboard.png)
+```
+
+### Add Player
+
+```markdown
+![Add Player](screenshots/add-player.png)
+```
+
+### Add Unevaluated Player
+
+```markdown
+![Add Unevaluated Player](screenshots/add-unevaluated-player.png)
+```
+
+### Unevaluated Players
+
+```markdown
+![Unevaluated Players](screenshots/unevaluated-players.png)
+```
+
+### Player Evaluation
+
+```markdown
+![Player Evaluation](screenshots/player-evaluation.png)
+```
+
+### Scout Dashboard
+
+```markdown
+![Scout Dashboard](screenshots/scout-dashboard.png)
+```
+
+### Player Search
+
+```markdown
+![Player Search](screenshots/player-search.png)
+```
+
+### Player Details
+
+```markdown
+![Player Details](screenshots/player-details.png)
+```
+
+### Shortlisted Players
+
+```markdown
+![Shortlisted Players](screenshots/shortlisted-players.png)
+```
+
+---
+
+## Future Improvements
+
+Possible future improvements include:
+
+* Player comparison
+* Player performance history
+* Scout evaluation system
+* Scout-player communication
+* Notifications
+* Advanced player recommendation
+* Player analytics
+* Dashboard statistics
+* REST API integration
+* Mobile application
+* Advanced filtering
+* Player availability tracking
+* Transfer and recruitment management
+
+---
+
+## Developer
+
+### Aravind Babu
+
+**BCA Graduate | Aspiring Python Full Stack Developer**
+
+**GitHub:**
+https://github.com/aravindbabu005cloud
+
+**LinkedIn:**
+https://www.linkedin.com/in/aravindbabu3488a6409/
+
+**Portfolio:**
+https://aravindbabu005-cloud.github.io/Portfolio/
+
+---
+
+## License
+
+This project was developed as a **learning and portfolio project**.
+
+© 2026 Aravind Babu. All rights reserved.
